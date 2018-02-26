@@ -237,17 +237,22 @@ describe('StraightPoolRulesService', () => {
 
   it('tracks successful safeties', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
     const game = service.newGame();
-    pending('figure out how to merge');
+    pending('what is a successful safety?');
   }));
 
   it('tracks successful safeties after continuation', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
     const game = service.newGame();
-    pending('figure out how to merge');
+    pending();
   }));
 
   it('tracks errors??', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
     const game = service.newGame();
-    pending('figure out how to merge');
+    pending('what is an error?');
+  }));
+
+  it('tracks other stats', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    pending('high-run, total-fouls, total-safeties, finished-racks, etc.');
   }));
 
 });
