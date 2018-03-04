@@ -12,7 +12,6 @@ export class StraightPoolRulesService {
 }
 
 export class StraightPoolGame {
-  winner: StraightPoolPlayer;
   turns: StraightPoolTurn[] = [];
   currentPlayer: StraightPoolPlayer;
   ballsRemaining = 15;
@@ -28,8 +27,23 @@ export class StraightPoolGame {
 
   get canSwitchPlayers(): boolean {
     const lastTurn = this.getLastTurn();
-    return lastTurn == null
-      || lastTurn.ending === EndingType.BreakingFoul;
+    return lastTurn == null;
+  }
+
+  get canForceRerack(): boolean {
+    const lastTurn = this.getLastTurn();
+    return lastTurn !== null
+      && lastTurn.ending === EndingType.BreakingFoul;
+  }
+
+  get isOpeningBreak(): boolean {
+    const lastTurn = this.getLastTurn();
+    return lastTurn === null
+      || lastTurn.ending === EndingType.ThreeConsecutiveFouls;
+  }
+
+  get winner(): StraightPoolPlayer {
+    return this.players.find(p => p.score >= this.pointLimit);
   }
 
   get hasWinner(): boolean {
@@ -42,18 +56,30 @@ export class StraightPoolGame {
     return this.currentPlayer;
   }
 
-  endTurn(ballsRemaining: number, ending: EndingType): StraightPoolTurn {
-    if (ballsRemaining > this.ballsRemaining) {
-      throw new Error('Cannot end a turn with more balls than when the turn started.');
+  endTurn(ending: EndingType, ballsRemaining?: number): StraightPoolTurn {
+    if (ballsRemaining == null) {
+      if (ending === EndingType.NewRack) {
+        ballsRemaining = 1; // assume one left in the most common case
+      } else {
+        ballsRemaining = this.ballsRemaining;
+      }
     }
     if (ending === EndingType.NewRack && ballsRemaining > 1) {
       throw new Error('NewRack can only be used when there are zero or one balls left.');
+    } else if (ending === EndingType.ForceRerack && ballsRemaining !== this.ballsRemaining) {
+      throw new Error('ForceRerack cannot be used if balls were made.');
+    } else if (ballsRemaining > this.ballsRemaining) {
+      throw new Error('Cannot end a turn with more balls than when the turn started.');
     }
 
     const ballsMade = this.ballsRemaining - ballsRemaining;
     const lastTurn = this.getLastTurn();
-    const continuation = (lastTurn != null && lastTurn.player === this.currentPlayer) ? lastTurn : null;
+    const continuation = (lastTurn != null && lastTurn.ending === EndingType.NewRack) ? lastTurn : null;
     const thisTurn = this.currentPlayer.getTurn(ending, ballsMade, continuation);
+
+    if (lastTurn && lastTurn.ending === EndingType.Safety) {
+      lastTurn.successfulSafety = thisTurn.points === 0;
+    }
 
     // only store this turn if it isn't a continuation of the last turn
     if (thisTurn !== continuation) {
@@ -68,13 +94,18 @@ export class StraightPoolGame {
         this.ballsRemaining = ballsRemaining;
         this.switchPlayers();
         break;
-      case EndingType.ThreeConsecutiveFouls:
+      case EndingType.ForceRerack:
+        this.ballsRemaining = 15;
+        this.switchPlayers();
+        break;
       case EndingType.NewRack:
+        thisTurn.finishedRacks++;
+        this.ballsRemaining = 15;
+        break;
+      case EndingType.ThreeConsecutiveFouls:
         this.ballsRemaining = 15;
         break; // the turn doesn't swich for 3-consecutive fouls
     }
-
-    this.winner = this.players.find(p => p.score >= this.pointLimit);
 
     return thisTurn;
   }
@@ -92,10 +123,40 @@ export class StraightPoolPlayer {
   consecutiveFouls = 0;
   turns: StraightPoolTurn[] = [];
 
+  get highRun(): number {
+    return Math.max.apply(null, this.turns.map(t => t.points));
+  }
+
+  get totalFouls(): number {
+    return this.turns.filter(t => t.ending === EndingType.Foul || t.ending === EndingType.BreakingFoul).length;
+  }
+
+  get totalMisses(): number {
+    return this.turns.filter(t => t.ending === EndingType.Miss).length;
+  }
+
+  get totalSafeties(): number {
+    return this.turns.filter(t => t.ending === EndingType.Safety).length;
+  }
+
+  get totalSuccessfulSafeties(): number {
+    return this.turns.filter(t => t.successfulSafety).length;
+  }
+
+  get totalFinishedRacks(): number {
+    return this.turns.reduce((prior, t) => prior + t.finishedRacks, 0);
+  }
+
+  private errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.ThreeConsecutiveFouls, EndingType.Miss];
+  get totalErrors(): number {
+    return this.turns.filter(t => this.errorEndings.includes(t.ending)
+      || t.successfulSafety === false).length;
+  }
+
   constructor(public name?: string) {}
 
   getTurn(ending: EndingType, points: number, continuation: StraightPoolTurn): StraightPoolTurn {
-    if (points > 0) {
+    if (points > 0 || ending !== EndingType.Foul) {
       this.consecutiveFouls = 0;
     }
 
@@ -135,10 +196,12 @@ export enum EndingType {
   Safety = 'Safety',
   NewRack = 'NewRack',
   BreakingFoul = 'BreakingFoul',
-  ThreeConsecutiveFouls = 'ThreeConsecutiveFouls'
+  ThreeConsecutiveFouls = 'ThreeConsecutiveFouls',
+  ForceRerack = 'ForceRerack',
 }
 
 export class StraightPoolTurn {
-  successfulSafety: boolean;
+  successfulSafety?: boolean;
+  finishedRacks = 0;
   constructor(public player: StraightPoolPlayer, public ending: EndingType, public points: number) {}
 }
