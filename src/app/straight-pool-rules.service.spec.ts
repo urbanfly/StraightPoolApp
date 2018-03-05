@@ -413,4 +413,5 @@ describe('StraightPoolRulesService', () => {
     expect(game.players[0].consecutiveFouls).toEqual(0);
   }));
 
+  // ending with 1 ball requires NewRack
 });

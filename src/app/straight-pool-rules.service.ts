@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class StraightPoolRulesService {
+  currentGame: StraightPoolGame;
 
   newGame(): StraightPoolGame {
     return new StraightPoolGame();
