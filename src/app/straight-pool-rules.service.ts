@@ -130,7 +130,7 @@ export class StraightPoolPlayer {
   turns: StraightPoolTurn[] = [];
 
   get highRun(): number {
-    return Math.max.apply(null, this.turns.map(t => t.points).concat(0));
+    return Math.max.apply(null, this.turns.map(t => t.ballsMade).concat(0));
   }
 
   get totalFouls(): number {
@@ -160,13 +160,15 @@ export class StraightPoolPlayer {
   }
 
   get avgBallsPerTurn(): number {
-    return this.turns.length === 0 ? 0 : this.score / this.turns.length;
+    const avg = this.turns.reduce((p, c, i) => p + (c.ballsMade - p) / (i + 1), 0);
+    return Number.parseFloat(avg.toFixed(2));
   }
 
   constructor(public name?: string) {}
 
-  getTurn(ending: EndingType, points: number, continuation: StraightPoolTurn): StraightPoolTurn {
-    if (points > 0 || ending !== EndingType.Foul) {
+  getTurn(ending: EndingType, ballsMade: number, continuation: StraightPoolTurn): StraightPoolTurn {
+    let points = ballsMade;
+    if (ballsMade > 0 || ending !== EndingType.Foul) {
       this.consecutiveFouls = 0;
     }
 
@@ -190,10 +192,11 @@ export class StraightPoolPlayer {
 
     if (continuation) {
       continuation.ending = ending;
+      continuation.ballsMade += ballsMade;
       continuation.points += points;
       return continuation;
     } else {
-      const turn = new StraightPoolTurn(this, ending, points);
+      const turn = new StraightPoolTurn(this, ending, ballsMade, points);
       this.turns.push(turn);
       return turn;
     }
@@ -213,5 +216,5 @@ export enum EndingType {
 export class StraightPoolTurn {
   successfulSafety?: boolean;
   finishedRacks = 0;
-  constructor(public player: StraightPoolPlayer, public ending: EndingType, public points: number) {}
+  constructor(public player: StraightPoolPlayer, public ending: EndingType, public ballsMade: number, public points: number) {}
 }

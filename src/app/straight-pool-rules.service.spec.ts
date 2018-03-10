@@ -345,7 +345,7 @@ describe('StraightPoolRulesService', () => {
     const game = service.newGame();
     expect(game.players[0].avgBallsPerTurn).toEqual(0);
 
-    game.endTurn(EndingType.Miss, 5); // P1 = 10
+    game.endTurn(EndingType.Foul, 5); // P1 = 10
     expect(game.players[0].avgBallsPerTurn).toEqual(10);
 
     game.endTurn(EndingType.Miss);
@@ -455,5 +455,10 @@ describe('StraightPoolRulesService', () => {
     expect(() => game.endTurn(EndingType.BreakingFoul, 14)).toThrow();
   }));
 
-  // how to count high run ending in a foul?
+  it('counts balls made instead of points for high-run', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    const turn = game.endTurn(EndingType.Foul, 5);
+    expect(turn.player.highRun).toEqual(10);
+  }));
+
 });
