@@ -1,0 +1,12 @@
+<table class="table table-striped">
+  <tbody>
+      <tr *ngFor="let x of objectKeys(template)">
+          <th>
+              {{ template[x] }}
+          </th>
+          <td style="text-align: center" [ngClass]="{active: game?.currentPlayer === p}" *ngFor="let p of game?.players">
+              {{ p[x] }}
+          </td>
+      </tr>
+  </tbody>
+</table>

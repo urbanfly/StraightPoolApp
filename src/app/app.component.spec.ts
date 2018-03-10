@@ -4,13 +4,13 @@ import { GameComponent } from './game/game.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { StraightPoolRulesService } from './straight-pool-rules.service';
-import { PlayerComponent } from './player/player.component';
+import { PlayersComponent } from './players/players.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent, GameComponent, PlayerComponent
+        AppComponent, GameComponent, PlayersComponent
       ],
       imports: [
         BrowserModule,

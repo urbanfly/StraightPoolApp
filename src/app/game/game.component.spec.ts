@@ -3,17 +3,17 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameComponent } from './game.component';
 import { FormsModule } from '@angular/forms';
 import { StraightPoolRulesService, EndingType } from '../straight-pool-rules.service';
-import { PlayerComponent } from '../player/player.component';
+import { PlayersComponent } from '../players/players.component';
 import { By } from '@angular/platform-browser';
 
-fdescribe('GameComponent', () => {
+describe('GameComponent', () => {
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        GameComponent, PlayerComponent
+        GameComponent, PlayersComponent
       ],
       imports: [
         FormsModule
@@ -33,7 +33,7 @@ fdescribe('GameComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  fit('hides breaking foul when any balls are made', async(() => {
+  it('hides breaking foul when any balls are made', async(() => {
     component.ballsRemaining = 14;
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
@@ -41,7 +41,7 @@ fdescribe('GameComponent', () => {
     expect(breakingFoulButton).toBeNull();
   }));
 
-  fit('hides switch players when any balls are made', async(() => {
+  it('hides switch players when any balls are made', async(() => {
     component.ballsRemaining = 14;
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
@@ -49,7 +49,7 @@ fdescribe('GameComponent', () => {
     expect(breakingFoulButton).toBeNull();
   }));
 
-  fit('hides force re-rack when any balls are made', async(() => {
+  it('hides force re-rack when any balls are made', async(() => {
     component.game.endTurn(EndingType.BreakingFoul);
     component.ballsRemaining = 14;
     fixture.detectChanges();

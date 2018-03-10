@@ -1,5 +1,4 @@
-<app-player style="display:inline-block" [player]="game.players[0]" [isActive]="game.currentPlayer === game.players[0]"></app-player>
-<app-player style="display:inline-block" [player]="game.players[1]" [isActive]="game.currentPlayer === game.players[1]"></app-player>
+<app-players [game]="game"></app-players>
 
 <div>
   <form *ngIf="!game.hasWinner">
