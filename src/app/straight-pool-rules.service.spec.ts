@@ -428,4 +428,8 @@ describe('StraightPoolRulesService', () => {
   // possible to have breaking foul with balls made?
   //   - make a ball, but "no rail"
   //   - make 1 ball, no other object ball contacts a rail
+
+  // foul after a safety considered successful
+
+  // how to count high run ending in a foul?
 });

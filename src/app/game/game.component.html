@@ -1,10 +1,10 @@
-<span [ngClass]="{'active': game.currentPlayer === game.players[0]}">{{ game.players[0].name }} {{ game.players[0].score}}</span><br/>
-<span [ngClass]="{'active': game.currentPlayer === game.players[1]}">{{ game.players[1].name }} {{ game.players[1].score}}</span><br/>
-<div>{{ game.ballsRemaining }}</div>
+<app-player style="display:inline-block" [player]="game.players[0]" [isActive]="game.currentPlayer === game.players[0]"></app-player>
+<app-player style="display:inline-block" [player]="game.players[1]" [isActive]="game.currentPlayer === game.players[1]"></app-player>
+
 <div>
-  <form #f="ngForm">
-    <button type="button" (click)="newRack(0)">New Rack (0 left)</button>
-    <button type="button" (click)="newRack(1)">New Rack (1 left)</button>
+  <form *ngIf="!game.hasWinner">
+    <button type="button" (click)="newRack(0)">0</button>
+    <button type="button" (click)="newRack(1)">1</button>
     <input type="radio"
            name="balls{{i}}"
            *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]" 
