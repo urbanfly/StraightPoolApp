@@ -15,8 +15,8 @@
     <button type="button" (click)="miss()">Miss</button>
     <button type="button" (click)="safety()">Safety</button>
     <button type="button" (click)="foul()">Foul</button>
-    <button type="button" *ngIf="game.isOpeningBreak" (click)="breakingFoul()">Breaking Foul</button>
-    <button type="button" *ngIf="game.canSwitchPlayers" (click)="game.switchPlayers()">Switch players</button>
-    <button type="button" *ngIf="game.canForceRerack" (click)="game.endTurn('ForceRerack')">Re-rack</button>
+    <button type="button" *ngIf="game.isOpeningBreak && ballsRemaining === 15" id="breakingFoul" (click)="breakingFoul()">Breaking Foul</button>
+    <button type="button" *ngIf="game.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers" (click)="game.switchPlayers()">Switch players</button>
+    <button type="button" *ngIf="game.canForceRerack && ballsRemaining === 15" id="forceRerack" (click)="game.endTurn('ForceRerack')">Re-rack</button>
   </form>
 </div>
