@@ -414,4 +414,8 @@ describe('StraightPoolRulesService', () => {
   }));
 
   // ending with 1 ball requires NewRack
+  // isOpeningBreak after ForceRerack
+  // possible to have breaking foul with balls made?
+  //   - make a ball, but "no rail"
+  //   - make 1 ball, no other object ball contacts a rail
 });
