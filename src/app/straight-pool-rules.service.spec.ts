@@ -336,6 +336,24 @@ describe('StraightPoolRulesService', () => {
     expect(game.players[0].totalFinishedRacks).toEqual(3);
   }));
 
+  it('starts with high run of zero', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    expect(game.players[0].highRun).toEqual(0);
+  }));
+
+  it('tracks avg balls per turn', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    expect(game.players[0].avgBallsPerTurn).toEqual(0);
+
+    game.endTurn(EndingType.Miss, 5); // P1 = 10
+    expect(game.players[0].avgBallsPerTurn).toEqual(10);
+
+    game.endTurn(EndingType.Miss);
+
+    game.endTurn(EndingType.Miss); // P1 = 5
+    expect(game.players[0].avgBallsPerTurn).toEqual(5);
+  }));
+
   it('counts errors', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
     const game = service.newGame();
     // an error is any breaking foul, regular foul, miss, or unsuccessful safety

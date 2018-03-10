@@ -10,7 +10,8 @@ export class PlayersComponent implements OnInit {
   template = {
     name: 'Name',
     score: 'Score',
-    fouls: 'Fouls',
+    avgBallsPerTurn: 'Avg',
+    consecutiveFouls: 'Fouls',
     highRun: 'High Run',
     totalFouls: 'Total Fouls',
     totalMisses: 'Total Misses',

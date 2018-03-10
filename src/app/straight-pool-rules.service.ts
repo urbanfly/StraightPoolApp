@@ -130,7 +130,7 @@ export class StraightPoolPlayer {
   turns: StraightPoolTurn[] = [];
 
   get highRun(): number {
-    return Math.max.apply(null, this.turns.map(t => t.points));
+    return Math.max.apply(null, this.turns.map(t => t.points).concat(0));
   }
 
   get totalFouls(): number {
@@ -157,6 +157,10 @@ export class StraightPoolPlayer {
   get totalErrors(): number {
     return this.turns.filter(t => this.errorEndings.includes(t.ending)
       || t.successfulSafety === false).length;
+  }
+
+  get avgBallsPerTurn(): number {
+    return this.turns.length === 0 ? 0 : this.score / this.turns.length;
   }
 
   constructor(public name?: string) {}
