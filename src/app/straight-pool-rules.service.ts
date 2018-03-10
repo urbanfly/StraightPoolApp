@@ -72,6 +72,8 @@ export class StraightPoolGame {
       throw new Error('NewRack is required when 0 or 1 balls are remaining.');
     } else if (ending === EndingType.ForceRerack && ballsRemaining !== this.ballsRemaining) {
       throw new Error('ForceRerack cannot be used if balls were made.');
+    } else if (ending === EndingType.BreakingFoul && ballsRemaining !== 15) {
+      throw new Error('BreakingFoul cannot be used if balls were made.');
     } else if (ballsRemaining > this.ballsRemaining) {
       throw new Error('Cannot end a turn with more balls than when the turn started.');
     }
