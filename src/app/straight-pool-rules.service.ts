@@ -40,7 +40,8 @@ export class StraightPoolGame {
   get isOpeningBreak(): boolean {
     const lastTurn = this.getLastTurn();
     return lastTurn === null
-      || lastTurn.ending === EndingType.ThreeConsecutiveFouls;
+    || lastTurn.ending === EndingType.ThreeConsecutiveFouls
+    || lastTurn.ending === EndingType.ForceRerack;
   }
 
   get winner(): StraightPoolPlayer {
@@ -67,6 +68,8 @@ export class StraightPoolGame {
     }
     if (ending === EndingType.NewRack && ballsRemaining > 1) {
       throw new Error('NewRack can only be used when there are zero or one balls left.');
+    } else if (ending !== EndingType.NewRack && ballsRemaining <= 1) {
+      throw new Error('NewRack is required when 0 or 1 balls are remaining.');
     } else if (ending === EndingType.ForceRerack && ballsRemaining !== this.ballsRemaining) {
       throw new Error('ForceRerack cannot be used if balls were made.');
     } else if (ballsRemaining > this.ballsRemaining) {

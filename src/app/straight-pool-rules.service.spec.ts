@@ -96,7 +96,7 @@ describe('StraightPoolRulesService', () => {
     it(`does not switch players on ${element}`, inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
       const game = service.newGame();
 
-      game.endTurn(element, 1);
+      game.endTurn(element);
 
       expect(game.currentPlayer).toEqual(game.players[0]);
     }));
@@ -413,8 +413,18 @@ describe('StraightPoolRulesService', () => {
     expect(game.players[0].consecutiveFouls).toEqual(0);
   }));
 
-  // ending with 1 ball requires NewRack
-  // isOpeningBreak after ForceRerack
+  it('requires NewRack ending when 1 ball remaining', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    expect(() => game.endTurn(EndingType.Miss, 1)).toThrow();
+  }));
+
+  it('uses opening break rules after forced re-rack', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    game.endTurn(EndingType.BreakingFoul);
+    game.endTurn(EndingType.ForceRerack);
+    expect(game.isOpeningBreak).toBeTruthy();
+  }));
+
   // possible to have breaking foul with balls made?
   //   - make a ball, but "no rail"
   //   - make 1 ball, no other object ball contacts a rail
