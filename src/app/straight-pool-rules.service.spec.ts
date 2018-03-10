@@ -425,11 +425,16 @@ describe('StraightPoolRulesService', () => {
     expect(game.isOpeningBreak).toBeTruthy();
   }));
 
+  fit('treats safety followed by 0-point foul as successful', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    const turn = game.endTurn(EndingType.Safety);
+    game.endTurn(EndingType.Foul);
+    expect(turn.successfulSafety).toBeTruthy();
+  }));
+
   // possible to have breaking foul with balls made?
   //   - make a ball, but "no rail"
   //   - make 1 ball, no other object ball contacts a rail
-
-  // foul after a safety considered successful
 
   // how to count high run ending in a foul?
 });

@@ -82,7 +82,7 @@ export class StraightPoolGame {
     const thisTurn = this.currentPlayer.getTurn(ending, ballsMade, continuation);
 
     if (lastTurn && lastTurn.ending === EndingType.Safety) {
-      lastTurn.successfulSafety = thisTurn.points === 0;
+      lastTurn.successfulSafety = thisTurn.points <= 0;
     }
 
     // only store this turn if it isn't a continuation of the last turn
