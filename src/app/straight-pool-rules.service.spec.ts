@@ -461,4 +461,6 @@ describe('StraightPoolRulesService', () => {
     expect(turn.player.highRun).toEqual(10);
   }));
 
+  // tracks top 5 runs
+  // calculates std. deviation
 });

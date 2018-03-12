@@ -153,9 +153,8 @@ export class StraightPoolPlayer {
     return this.turns.reduce((prior, t) => prior + t.finishedRacks, 0);
   }
 
-  private errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.ThreeConsecutiveFouls, EndingType.Miss];
   get totalErrors(): number {
-    return this.turns.filter(t => this.errorEndings.includes(t.ending)
+    return this.turns.filter(t => errorEndings.includes(t.ending)
       || t.successfulSafety === false).length;
   }
 
@@ -212,6 +211,8 @@ export enum EndingType {
   ThreeConsecutiveFouls = 'ThreeConsecutiveFouls',
   ForceRerack = 'ForceRerack',
 }
+
+const errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.ThreeConsecutiveFouls, EndingType.Miss];
 
 export class StraightPoolTurn {
   successfulSafety?: boolean;
