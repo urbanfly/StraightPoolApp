@@ -125,9 +125,12 @@ export class StraightPoolGame {
 }
 
 export class StraightPoolPlayer {
-  score = 0;
   consecutiveFouls = 0;
   turns: StraightPoolTurn[] = [];
+
+  get score(): number {
+    return this.turns.reduce((prior, t) => prior + t.points, 0);
+  }
 
   get highRun(): number {
     return Math.max.apply(null, this.turns.map(t => t.ballsMade).concat(0));
@@ -186,8 +189,6 @@ export class StraightPoolPlayer {
         points -= 2;
         break;
     }
-
-    this.score += points;
 
     if (continuation) {
       continuation.ending = ending;
