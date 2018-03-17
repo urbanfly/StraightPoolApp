@@ -14,21 +14,21 @@ export class StraightPoolRulesService {
 
 export class StraightPoolGame {
   turns: StraightPoolTurn[] = [];
-  currentPlayer: StraightPoolPlayer;
-  ballsRemaining = 15;
   players: StraightPoolPlayer[];
+  currentPlayerIndex = 0;
+  ballsRemaining = 15;
 
   constructor(public pointLimit: number = 100) {
     this.players = [
       new StraightPoolPlayer('Player1'),
       new StraightPoolPlayer('Player2')
     ];
-    this.currentPlayer = this.players[0];
   }
 
+  get currentPlayer(): StraightPoolPlayer { return this.players[this.currentPlayerIndex]; }
+
   get canSwitchPlayers(): boolean {
-    const lastTurn = this.getLastTurn();
-    return lastTurn == null;
+    return this.getLastTurn() == null;
   }
 
   get canForceRerack(): boolean {
@@ -45,16 +45,19 @@ export class StraightPoolGame {
   }
 
   get winner(): StraightPoolPlayer {
-    return this.players.find(p => p.score >= this.pointLimit);
+    return this.players.find((p, i) => this.getPlayerStats(i).score >= this.pointLimit);
   }
 
   get hasWinner(): boolean {
     return this.winner != null;
   }
 
+  getPlayerStats(playerIndex: number): StraightPoolPlayerStats {
+    return new StraightPoolPlayerStats(this.players[playerIndex], this.turns);
+  }
+
   switchPlayers(): StraightPoolPlayer {
-    const currentPlayerIndex = this.players.indexOf(this.currentPlayer);
-    this.currentPlayer =  this.players[(currentPlayerIndex + 1) % this.players.length];
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     return this.currentPlayer;
   }
 
@@ -81,7 +84,7 @@ export class StraightPoolGame {
     const ballsMade = this.ballsRemaining - ballsRemaining;
     const lastTurn = this.getLastTurn();
     const continuation = (lastTurn != null && lastTurn.ending === EndingType.NewRack) ? lastTurn : null;
-    const thisTurn = this.currentPlayer.getTurn(ending, ballsMade, continuation);
+    const thisTurn = this.getPlayerStats(this.currentPlayerIndex).getTurn(ending, ballsMade, continuation);
 
     if (lastTurn && lastTurn.ending === EndingType.Safety) {
       lastTurn.successfulSafety = thisTurn.points <= 0;
@@ -125,64 +128,81 @@ export class StraightPoolGame {
 }
 
 export class StraightPoolPlayer {
-  consecutiveFouls = 0;
-  turns: StraightPoolTurn[] = [];
+  constructor(public name?: string) {}
+}
+
+export class StraightPoolPlayerStats {
+
+  constructor(public player: StraightPoolPlayer, public allTurns: StraightPoolTurn[]) {}
+
+  get playerName(): string { return this.player.name; }
+
+  get consecutiveFouls(): number {
+    const ts = this.playerTurns;
+    let fouls = 0;
+    for (let i = ts.length - 1; i >= 0; i--) {
+      if (ts[i].ending === EndingType.Foul && ts[i].ballsMade === 0) {
+        fouls++;
+      } else {
+        break;
+      }
+    }
+
+    return fouls;
+  }
+
+  get playerTurns(): StraightPoolTurn[] {
+    return this.allTurns.filter(t => t.playerName === this.player.name);
+  }
 
   get score(): number {
-    return this.turns.reduce((prior, t) => prior + t.points, 0);
+    return this.playerTurns.reduce((prior, t) => prior + t.points, 0);
   }
 
   get highRun(): number {
-    return Math.max.apply(null, this.turns.map(t => t.ballsMade).concat(0));
+    return Math.max.apply(null, this.playerTurns.map(t => t.ballsMade).concat(0));
   }
 
   get totalFouls(): number {
-    return this.turns.filter(t => t.ending === EndingType.Foul || t.ending === EndingType.BreakingFoul).length;
+    return this.playerTurns.filter(t => t.ending === EndingType.Foul || t.ending === EndingType.BreakingFoul).length;
   }
 
   get totalMisses(): number {
-    return this.turns.filter(t => t.ending === EndingType.Miss).length;
+    return this.playerTurns.filter(t => t.ending === EndingType.Miss).length;
   }
 
   get totalSafeties(): number {
-    return this.turns.filter(t => t.ending === EndingType.Safety).length;
+    return this.playerTurns.filter(t => t.ending === EndingType.Safety).length;
   }
 
   get totalSuccessfulSafeties(): number {
-    return this.turns.filter(t => t.successfulSafety).length;
+    return this.playerTurns.filter(t => t.successfulSafety).length;
   }
 
   get totalFinishedRacks(): number {
-    return this.turns.reduce((prior, t) => prior + t.finishedRacks, 0);
+    return this.playerTurns.reduce((prior, t) => prior + t.finishedRacks, 0);
   }
 
   get totalErrors(): number {
-    return this.turns.filter(t => errorEndings.includes(t.ending)
+    return this.playerTurns.filter(t => errorEndings.includes(t.ending)
       || t.successfulSafety === false).length;
   }
 
   get avgBallsPerTurn(): number {
-    const avg = this.turns.reduce((p, c, i) => p + (c.ballsMade - p) / (i + 1), 0);
+    const avg = this.playerTurns.reduce((p, c, i) => p + (c.ballsMade - p) / (i + 1), 0);
     return Number.parseFloat(avg.toFixed(2));
   }
 
-  constructor(public name?: string) {}
-
   getTurn(ending: EndingType, ballsMade: number, continuation: StraightPoolTurn): StraightPoolTurn {
     let points = ballsMade;
-    if (ballsMade > 0 || ending !== EndingType.Foul) {
-      this.consecutiveFouls = 0;
-    }
 
     switch (ending) {
       case EndingType.Foul:
         points--; // deduct a point for each foul
-        this.consecutiveFouls++;
 
-        if (this.consecutiveFouls === 3) {
+        if (this.consecutiveFouls === 2 && ballsMade === 0) {
           ending = EndingType.ThreeConsecutiveFouls;
           points -= 15;
-          this.consecutiveFouls = 0;
         }
         break;
       case EndingType.BreakingFoul:
@@ -196,9 +216,7 @@ export class StraightPoolPlayer {
       continuation.points += points;
       return continuation;
     } else {
-      const turn = new StraightPoolTurn(this, ending, ballsMade, points);
-      this.turns.push(turn);
-      return turn;
+      return new StraightPoolTurn(this.player.name, ending, ballsMade, points);
     }
   }
 }
@@ -218,5 +236,5 @@ const errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.Three
 export class StraightPoolTurn {
   successfulSafety?: boolean;
   finishedRacks = 0;
-  constructor(public player: StraightPoolPlayer, public ending: EndingType, public ballsMade: number, public points: number) {}
+  constructor(public playerName: string, public ending: EndingType, public ballsMade: number, public points: number) {}
 }

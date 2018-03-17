@@ -23,10 +23,7 @@ module.exports = function (config) {
     angularCli: {
       environment: 'dev'
     },
-    mochaReporter: {
-      output: 'noFailures',
-    },
-    reporters: ['mocha', 'kjhtml'],
+    reporters: ['mocha'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

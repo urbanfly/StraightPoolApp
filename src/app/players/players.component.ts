@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { StraightPoolPlayer, StraightPoolGame } from '../straight-pool-rules.service';
+import { StraightPoolPlayer, StraightPoolGame, StraightPoolPlayerStats } from '../straight-pool-rules.service';
 
 @Component({
   selector: 'app-players',
@@ -8,7 +8,7 @@ import { StraightPoolPlayer, StraightPoolGame } from '../straight-pool-rules.ser
 })
 export class PlayersComponent implements OnInit {
   template = {
-    name: 'Name',
+    playerName: 'Name',
     score: 'Score',
     avgBallsPerTurn: 'Avg',
     consecutiveFouls: 'Fouls',
@@ -28,4 +28,10 @@ export class PlayersComponent implements OnInit {
   ngOnInit() {
   }
 
+  get stats(): StraightPoolPlayerStats[] {
+    if (this.game === undefined || this.game.players === undefined) {
+      return null;
+    }
+    return this.game.players.map((p, i) => this.game.getPlayerStats(i));
+  }
 }
