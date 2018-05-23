@@ -61,7 +61,7 @@ describe('StraightPoolRulesService', () => {
 
     expect(turn).not.toBeNull();
     expect(turn.ending).toEqual(EndingType.Miss);
-    expect(turn.playerName).toEqual(game.players[0].name);
+    expect(turn.playerIndex).toEqual(0);
     expect(turn.points).toEqual(0);
   }));
 
@@ -567,3 +567,5 @@ describe('StraightPoolRulesService', () => {
     expect(game.canUndo).toBeFalsy();
   }));
 });
+
+// TODO: load saved games

@@ -57,7 +57,7 @@ export class StraightPoolGame {
   }
 
   getPlayerStats(playerIndex: number): StraightPoolPlayerStats {
-    return new StraightPoolPlayerStats(this.players[playerIndex], this.turns);
+    return new StraightPoolPlayerStats(this.players[playerIndex], playerIndex, this.turns);
   }
 
   switchPlayers(): StraightPoolPlayer {
@@ -171,7 +171,7 @@ export class StraightPoolPlayerStats {
 
   static errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.ThreeConsecutiveFouls, EndingType.Miss];
 
-  constructor(public player: StraightPoolPlayer, public allTurns: StraightPoolTurn[]) {}
+  constructor(public player: StraightPoolPlayer, private playerIndex: number, public allTurns: StraightPoolTurn[]) {}
 
   get playerName(): string { return this.player.name; }
 
@@ -190,7 +190,7 @@ export class StraightPoolPlayerStats {
   }
 
   get playerTurns(): StraightPoolTurn[] {
-    return this.allTurns.filter(t => t.playerName === this.player.name);
+    return this.allTurns.filter(t => t.playerIndex === this.playerIndex);
   }
 
   get score(): number {
@@ -269,17 +269,16 @@ export class StraightPoolPlayerStats {
         points -= 2;
         break;
     }
-    return new StraightPoolTurn(this.player.name, ending, ballsMade, points, continuation);
+    return new StraightPoolTurn(this.playerIndex, ending, ballsMade, points, continuation);
   }
 }
 
 export class StraightPoolTurn {
   successfulSafety?: boolean;
-  playerIndex: number;
   include15thBall = false;
 
   constructor(
-    public playerName: string,
+    public playerIndex: number,
     public ending: EndingType,
     public ballsMade: number,
     public points: number,
