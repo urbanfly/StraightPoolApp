@@ -37,6 +37,10 @@ export class StraightPoolGame {
       && lastTurn.ending === EndingType.BreakingFoul;
   }
 
+  get canUndo(): boolean {
+    return this.turns.length > 0;
+  }
+
   get isOpeningBreak(): boolean {
     const lastTurn = this.getLastTurn();
     return lastTurn === null
@@ -83,17 +87,20 @@ export class StraightPoolGame {
 
     const ballsMade = this.ballsRemaining - ballsRemaining;
     const lastTurn = this.getLastTurn();
-    const continuation = (lastTurn != null && lastTurn.ending === EndingType.NewRack) ? lastTurn : null;
+    const continuation = (lastTurn && lastTurn.ending === EndingType.NewRack) ? lastTurn : null;
     const thisTurn = this.getPlayerStats(this.currentPlayerIndex).getTurn(ending, ballsMade, continuation);
+    thisTurn.playerIndex = this.currentPlayerIndex;
+    thisTurn.include15thBall = ballsRemaining === 0;
 
     if (lastTurn && lastTurn.ending === EndingType.Safety) {
       lastTurn.successfulSafety = thisTurn.points <= 0;
     }
 
-    // only store this turn if it isn't a continuation of the last turn
-    if (thisTurn !== continuation) {
-      this.turns.push(thisTurn);
+    if (continuation !== null) {
+      this.turns.pop(); // take off the continuation
     }
+
+    this.turns.push(thisTurn);
 
     switch (thisTurn.ending) {
       case EndingType.Miss:
@@ -108,7 +115,6 @@ export class StraightPoolGame {
         this.switchPlayers();
         break;
       case EndingType.NewRack:
-        thisTurn.finishedRacks++;
         this.ballsRemaining = 15;
         break;
       case EndingType.ThreeConsecutiveFouls:
@@ -117,6 +123,26 @@ export class StraightPoolGame {
     }
 
     return thisTurn;
+  }
+
+  undo(): StraightPoolTurn {
+    const turn = this.turns.pop();
+    if (turn === undefined) {
+      return null;
+    }
+
+    this.currentPlayerIndex = turn.playerIndex;
+    if (turn.ending === EndingType.NewRack) {
+      this.ballsRemaining = turn.ballsMade + (turn.include15thBall ? 0 : 1);
+    } else {
+      this.ballsRemaining += turn.ballsMade;
+    }
+
+    if (turn.continuation) {
+      this.turns.push(turn.continuation);
+    }
+
+    return turn;
   }
 
   private getLastTurn(): StraightPoolTurn {
@@ -131,7 +157,19 @@ export class StraightPoolPlayer {
   constructor(public name?: string) {}
 }
 
+export enum EndingType {
+  Miss = 'Miss',
+  Foul = 'Foul',
+  Safety = 'Safety',
+  NewRack = 'NewRack',
+  BreakingFoul = 'BreakingFoul',
+  ThreeConsecutiveFouls = 'ThreeConsecutiveFouls',
+  ForceRerack = 'ForceRerack',
+}
+
 export class StraightPoolPlayerStats {
+
+  static errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.ThreeConsecutiveFouls, EndingType.Miss];
 
   constructor(public player: StraightPoolPlayer, public allTurns: StraightPoolTurn[]) {}
 
@@ -156,11 +194,11 @@ export class StraightPoolPlayerStats {
   }
 
   get score(): number {
-    return this.playerTurns.reduce((prior, t) => prior + t.points, 0);
+    return this.playerTurns.reduce((prior, t) => prior + t.totalPoints, 0);
   }
 
   get highRun(): number {
-    return Math.max.apply(null, this.playerTurns.map(t => t.ballsMade).concat(0));
+    return Math.max.apply(null, this.playerTurns.map(t => t.totalBallsMade).concat(0));
   }
 
   get totalFouls(): number {
@@ -184,13 +222,35 @@ export class StraightPoolPlayerStats {
   }
 
   get totalErrors(): number {
-    return this.playerTurns.filter(t => errorEndings.includes(t.ending)
+    return this.playerTurns.filter(t => StraightPoolPlayerStats.errorEndings.includes(t.ending)
       || t.successfulSafety === false).length;
   }
 
   get avgBallsPerTurn(): number {
-    const avg = this.playerTurns.reduce((p, c, i) => p + (c.ballsMade - p) / (i + 1), 0);
+    const avg = this.playerTurns.reduce((p, c, i) => p + (c.totalBallsMade - p) / (i + 1), 0);
     return Number.parseFloat(avg.toFixed(2));
+  }
+
+  get top5HighRuns(): number[] {
+    return this.playerTurns.map(turn => turn.totalBallsMade).sort((a, b) => a - b).reverse().slice(0, 5);
+  }
+
+  get standardDeviation(): number {
+    function _avg(values: number[]): number {
+      if (values.length === 0) {
+        return 0;
+      }
+
+      const sum = values.reduce((p, c) => p + c, 0);
+      return sum / values.length;
+    }
+
+    // sqrt(avg(points.map(p=>sqr(p-avg))))
+    const ballsMade = this.playerTurns.map(turn => turn.totalBallsMade);
+    const avg = _avg(ballsMade);
+    const diffs = ballsMade.map(v => Math.pow(v - avg, 2));
+    const diffAvg = _avg(diffs);
+    return Number.parseFloat(Math.sqrt(diffAvg).toFixed(3));
   }
 
   getTurn(ending: EndingType, ballsMade: number, continuation: StraightPoolTurn): StraightPoolTurn {
@@ -209,32 +269,31 @@ export class StraightPoolPlayerStats {
         points -= 2;
         break;
     }
-
-    if (continuation) {
-      continuation.ending = ending;
-      continuation.ballsMade += ballsMade;
-      continuation.points += points;
-      return continuation;
-    } else {
-      return new StraightPoolTurn(this.player.name, ending, ballsMade, points);
-    }
+    return new StraightPoolTurn(this.player.name, ending, ballsMade, points, continuation);
   }
 }
 
-export enum EndingType {
-  Miss = 'Miss',
-  Foul = 'Foul',
-  Safety = 'Safety',
-  NewRack = 'NewRack',
-  BreakingFoul = 'BreakingFoul',
-  ThreeConsecutiveFouls = 'ThreeConsecutiveFouls',
-  ForceRerack = 'ForceRerack',
-}
-
-const errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.ThreeConsecutiveFouls, EndingType.Miss];
-
 export class StraightPoolTurn {
   successfulSafety?: boolean;
-  finishedRacks = 0;
-  constructor(public playerName: string, public ending: EndingType, public ballsMade: number, public points: number) {}
+  playerIndex: number;
+  include15thBall = false;
+
+  constructor(
+    public playerName: string,
+    public ending: EndingType,
+    public ballsMade: number,
+    public points: number,
+    public continuation?: StraightPoolTurn) {}
+
+    get totalPoints(): number {
+      return this.points + (this.continuation ? this.continuation.totalPoints : 0);
+    }
+
+    get totalBallsMade(): number {
+      return this.ballsMade + (this.continuation ? this.continuation.totalBallsMade : 0);
+    }
+
+    get finishedRacks(): number {
+      return (this.ending === EndingType.NewRack ? 1 : 0) + (this.continuation ? this.continuation.finishedRacks : 0);
+    }
 }

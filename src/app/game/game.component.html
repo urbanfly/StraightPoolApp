@@ -5,20 +5,26 @@
 
 <div>
   <form *ngIf="!game.hasWinner">
-    <button type="button" (click)="newRack(0)">0</button>
-    <button type="button" (click)="newRack(1)">1</button>
-    <input type="radio"
-           name="balls{{i}}"
-           *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]" 
-           [value]="i" 
-           [(ngModel)]="ballsRemaining"
-           [disabled]="game.ballsRemaining < i">
-    <br/>
-    <button type="button" (click)="miss()">Miss</button>
-    <button type="button" (click)="safety()">Safety</button>
-    <button type="button" (click)="foul()">Foul</button>
-    <button type="button" *ngIf="game.isOpeningBreak && ballsRemaining === 15" id="breakingFoul" (click)="breakingFoul()">Breaking Foul</button>
-    <button type="button" *ngIf="game.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers" (click)="game.switchPlayers()">Switch players</button>
-    <button type="button" *ngIf="game.canForceRerack && ballsRemaining === 15" id="forceRerack" (click)="game.endTurn('ForceRerack')">Re-rack</button>
+    <div>
+      <button type="button" (click)="newRack(0)">0</button>
+      <button type="button" (click)="newRack(1)">1</button>
+      <input type="radio"
+            name="balls{{i}}"
+            *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]" 
+            [value]="i" 
+            [(ngModel)]="ballsRemaining"
+            [disabled]="game.ballsRemaining < i">
+    </div>
+    <div>
+      <button type="button" (click)="miss()">Miss</button>
+      <button type="button" (click)="safety()">Safety</button>
+      <button type="button" (click)="foul()">Foul</button>
+      <button type="button" *ngIf="game.isOpeningBreak && ballsRemaining === 15" id="breakingFoul" (click)="breakingFoul()">Breaking Foul</button>
+      <button type="button" *ngIf="game.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers" (click)="game.switchPlayers()">Switch players</button>
+      <button type="button" *ngIf="game.canForceRerack && ballsRemaining === 15" id="forceRerack" (click)="game.endTurn('ForceRerack')">Re-rack</button>
+    </div>
+    <div *ngIf="game.canUndo">
+      <button type="button" (click)="game.undo()">Undo</button>
+    </div>
   </form>
 </div>

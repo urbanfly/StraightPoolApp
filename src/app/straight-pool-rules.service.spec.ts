@@ -461,6 +461,109 @@ describe('StraightPoolRulesService', () => {
     expect(game.getPlayerStats(0).highRun).toEqual(10);
   }));
 
-  // tracks top 5 runs
-  // calculates std. deviation
+  it('tracks top 5 runs', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    let turn = game.endTurn(EndingType.Miss, 14); // player 1
+    turn = game.endTurn(EndingType.Miss);     // player 2
+    turn = game.endTurn(EndingType.Miss, 12);     // player 1
+    turn = game.endTurn(EndingType.Miss);     // player 2
+    turn = game.endTurn(EndingType.Miss, 9);     // player 1
+    turn = game.endTurn(EndingType.Miss);     // player 2
+    turn = game.endTurn(EndingType.Miss, 9);     // player 1
+    turn = game.endTurn(EndingType.Miss);     // player 2
+    turn = game.endTurn(EndingType.Miss, 9);     // player 1
+    turn = game.endTurn(EndingType.Miss);     // player 2
+    turn = game.endTurn(EndingType.Miss, 6);     // player 1
+    turn = game.endTurn(EndingType.Miss);     // player 2
+    expect(game.getPlayerStats(0).top5HighRuns).toEqual([3, 3, 2, 1, 0]);
+  }));
+
+  it('calculates std. deviation', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    expect(game.getPlayerStats(0).standardDeviation).toEqual(0); // no turns yet
+
+    game.endTurn(EndingType.Foul, 5);
+    expect(game.getPlayerStats(0).standardDeviation).toEqual(0); // after 1 turn with 10 points
+
+    game.endTurn(EndingType.Miss);
+    game.endTurn(EndingType.Miss);
+    expect(game.getPlayerStats(0).standardDeviation).toBeCloseTo(5);
+
+    game.endTurn(EndingType.Miss);
+    game.endTurn(EndingType.Miss);
+    expect(game.getPlayerStats(0).standardDeviation).toBeCloseTo(4.714, 0.001);
+
+    game.endTurn(EndingType.Miss);
+    game.endTurn(EndingType.Miss, 4);
+    expect(game.getPlayerStats(0).standardDeviation).toBeCloseTo(4.205, 0.001);
+  }));
+
+  it('can undo last turn', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    game.endTurn(EndingType.Foul, 5);
+    expect(game.turns.length).toEqual(1);
+
+    game.undo();
+    expect(game.turns.length).toEqual(0);
+  }));
+
+  it('restores game state', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    game.endTurn(EndingType.Foul, 5);
+    expect(game.ballsRemaining).toEqual(5);
+
+    game.undo();
+    expect(game.ballsRemaining).toEqual(15);
+  }));
+
+  it('can undo multiple turns', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+
+    game.endTurn(EndingType.Foul, 5);
+
+    game.endTurn(EndingType.Miss);
+    game.endTurn(EndingType.Miss);
+
+    game.endTurn(EndingType.Miss);
+    game.endTurn(EndingType.Miss);
+
+    game.endTurn(EndingType.Miss);
+    game.endTurn(EndingType.Miss, 4);
+    expect(game.getPlayerStats(0).standardDeviation).toBeCloseTo(4.205, 0.001);
+    game.undo();
+    game.undo();
+    expect(game.getPlayerStats(0).standardDeviation).toBeCloseTo(4.714, 0.001);
+    game.undo();
+    game.undo();
+    expect(game.getPlayerStats(0).standardDeviation).toBeCloseTo(5);
+    game.undo();
+    game.undo();
+    expect(game.getPlayerStats(0).standardDeviation).toEqual(0); // after 1 turn with 10 points
+    game.undo();
+    expect(game.getPlayerStats(0).standardDeviation).toEqual(0); // no turns yet
+  }));
+
+  it('can undo finish rack', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    game.endTurn(EndingType.Miss, 5);
+    game.endTurn(EndingType.NewRack, 1);
+    game.undo();
+    expect(game.ballsRemaining).toEqual(5);
+  }));
+
+  it('undo does not throw', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    game.undo();
+  }));
+
+  it('knows whether it can undo', inject([StraightPoolRulesService], (service: StraightPoolRulesService) => {
+    const game = service.newGame();
+    expect(game.canUndo).toBeFalsy();
+
+    game.endTurn(EndingType.Miss);
+    expect(game.canUndo).toBeTruthy();
+
+    game.undo();
+    expect(game.canUndo).toBeFalsy();
+  }));
 });
