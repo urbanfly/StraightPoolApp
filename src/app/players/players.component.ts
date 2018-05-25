@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { StraightPoolPlayer, StraightPoolGame, StraightPoolPlayerStats } from '../straight-pool-rules.service';
+import { StraightPoolGame } from '../straight-pool-game';
+import { StraightPoolPlayerStats } from '../straight-pool-player-stats';
 
 @Component({
   selector: 'app-players',

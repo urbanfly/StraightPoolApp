@@ -2,9 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GameComponent } from './game.component';
 import { FormsModule } from '@angular/forms';
-import { StraightPoolRulesService, EndingType } from '../straight-pool-rules.service';
+import { StraightPoolRulesService } from '../straight-pool-rules.service';
 import { PlayersComponent } from '../players/players.component';
 import { By } from '@angular/platform-browser';
+import { EndingType } from '../straight-pool-ending-type.enum';
 
 describe('GameComponent', () => {
   let component: GameComponent;

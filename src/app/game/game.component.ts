@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { StraightPoolRulesService, StraightPoolGame, StraightPoolPlayer, StraightPoolTurn
-  , EndingType } from '../straight-pool-rules.service';
+import { StraightPoolRulesService } from '../straight-pool-rules.service';
+import { StraightPoolGame } from '../straight-pool-game';
+import { EndingType } from '../straight-pool-ending-type.enum';
 
 @Component({
   selector: 'app-game',

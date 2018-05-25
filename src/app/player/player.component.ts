@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { StraightPoolPlayer } from '../straight-pool-rules.service';
+import { StraightPoolPlayer } from '../straight-pool-player';
 
 @Component({
   selector: 'app-player',
