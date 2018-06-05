@@ -2,8 +2,10 @@ import { StraightPoolTurn } from './straight-pool-turn';
 import { EndingType } from './straight-pool-ending-type.enum';
 import { StraightPoolPlayer } from './straight-pool-player';
 import { StraightPoolPlayerStats } from './straight-pool-player-stats';
+import * as uuidv4 from 'uuid/v4';
 
 export class StraightPoolGame {
+    id: string = uuidv4();
     turns: StraightPoolTurn[] = [];
     players: StraightPoolPlayer[];
     currentPlayerIndex = 0;

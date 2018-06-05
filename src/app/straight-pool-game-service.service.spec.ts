@@ -1,16 +1,20 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { StraightPoolGameServiceService } from './straight-pool-game-service.service';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { StraightPoolGameServiceService, BASE_URL } from './straight-pool-game-service.service';
 import { StraightPoolGame } from './straight-pool-game';
 import { StraightPoolTurn } from './straight-pool-turn';
 import { StraightPoolPlayer } from './straight-pool-player';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { Injector } from '@angular/core';
 
 describe('StraightPoolGameServiceService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [StraightPoolGameServiceService],
+      providers: [
+        { provide: BASE_URL, useValue: 'http://localhost/api/games' },
+        StraightPoolGameServiceService
+      ],
       imports: [ HttpClientTestingModule ]
     });
   });
@@ -19,20 +23,23 @@ describe('StraightPoolGameServiceService', () => {
     expect(service).toBeTruthy();
   }));
 
-  fit('Can load remote games', inject([HttpTestingController, HttpClient], (controller: HttpTestingController, client: HttpClient) => {
-    // TODO: use the service instead of HttpClient directly
-    client.get<StraightPoolGame>('http://localhost/games/1').subscribe(game => {
-      const g = Object.assign(new StraightPoolGame(), game);
-      g.players = g.players.map(p => Object.assign(new StraightPoolPlayer(), p));
-      g.turns = g.turns.map(t => Object.assign(new StraightPoolTurn(), t));
-      console.log(g);
+  it('baseUrl ends with /', inject([StraightPoolGameServiceService], (service: StraightPoolGameServiceService) => {
+    expect(service.baseUrl).toEqual('http://localhost/api/games/');
+  }));
+
+  it('Can load remote games', inject([HttpTestingController, StraightPoolGameServiceService],
+    (controller: HttpTestingController, service: StraightPoolGameServiceService) => {
+    const game = service.loadGame('1').subscribe(g => {
       expect(g instanceof StraightPoolGame).toBeTruthy();
-      expect(g.turns.length).toEqual(2);
+      expect(g).toBeTruthy();
+      expect(g.turns.length).toBe(2);
+      expect(g.players.length).toBe(2);
     });
 
-    const req = controller.expectOne('http://localhost/games/1');
+    const req = controller.expectOne('http://localhost/api/games/1');
     expect(req).toBeTruthy();
     req.flush({
+      'id': '6b9f464f-3f6b-4538-9d55-e65914404e9c',
       'pointLimit': 100,
       'turns': [
           {
@@ -61,6 +68,6 @@ describe('StraightPoolGameServiceService', () => {
           }
       ],
       'currentPlayerIndex': 0
-  });
+    });
   }));
 });
