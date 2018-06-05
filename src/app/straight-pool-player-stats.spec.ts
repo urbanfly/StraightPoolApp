@@ -4,48 +4,46 @@ import { StraightPoolTurn } from './straight-pool-turn';
 import { StraightPoolGame } from './straight-pool-game';
 import { EndingType } from './straight-pool-ending-type.enum';
 
-describe('StraightPoolPlayerStats', () => {
+// TODO: Track the type of foul (Scratch, Intentional, General)
+
+fdescribe('StraightPoolPlayerStats', () => {
   it('should create an instance', () => {
     expect(new StraightPoolPlayerStats(new StraightPoolPlayer(), 0, [])).toBeTruthy();
   });
 
   // TODO: remove use of SPG; test the stats directly
   it('tracks high run', () => {
-    const game = new StraightPoolGame();
-    game.endTurn(EndingType.Miss, 14);
-    expect(game.getPlayerStats(0).highRun).toEqual(1);
+    const stats = new StraightPoolPlayerStats(null, 0, [
+      new StraightPoolTurn(0, EndingType.Miss, 1, 1),
+      new StraightPoolTurn(0, EndingType.Miss, 2, 2),
+      new StraightPoolTurn(0, EndingType.Miss, 3, 3),
+      new StraightPoolTurn(0, EndingType.Miss, 4, 4),
+      new StraightPoolTurn(0, EndingType.Miss, 5, 5)
+    ]);
 
-    game.endTurn(EndingType.Miss, 14);
+    expect(stats.highRun).toBe(5);
+  });
 
-    game.endTurn(EndingType.Miss, 10);
-    expect(game.getPlayerStats(0).highRun).toEqual(4);
+  it('tracks high runs that span continuations', () => {
+    const stats = new StraightPoolPlayerStats(null, 0, [
+      new StraightPoolTurn(0, EndingType.Miss, 14, 14,
+        new StraightPoolTurn(0, EndingType.NewRack, 9, 9)),
+    ]);
 
-    game.endTurn(EndingType.Miss, 10);
-
-    game.endTurn(EndingType.NewRack, 1);
-    expect(game.getPlayerStats(0).highRun).toEqual(9);
-    game.endTurn(EndingType.NewRack, 1);
-    expect(game.getPlayerStats(0).highRun).toEqual(23);
+    expect(stats.highRun).toBe(23);
   });
 
   it('tracks total fouls', () => {
-    const game = new StraightPoolGame();
-    game.endTurn(EndingType.BreakingFoul);
-    expect(game.getPlayerStats(0).totalFouls).toEqual(1);
+    const stats = new StraightPoolPlayerStats(null, 0, [
+      new StraightPoolTurn(0, EndingType.BreakingFoul),
+      new StraightPoolTurn(1, EndingType.ForceRerack),
+      new StraightPoolTurn(0, EndingType.Foul),
+      new StraightPoolTurn(1, EndingType.Foul),
+      new StraightPoolTurn(0, EndingType.Foul),
+      new StraightPoolTurn(1, EndingType.Foul)
+    ]);
 
-    game.endTurn(EndingType.ForceRerack);
-
-    game.endTurn(EndingType.Foul);
-    expect(game.getPlayerStats(0).totalFouls).toEqual(2);
-
-    game.endTurn(EndingType.Foul);
-    expect(game.getPlayerStats(1).totalFouls).toEqual(1);
-
-    game.endTurn(EndingType.Foul);
-    expect(game.getPlayerStats(0).totalFouls).toEqual(3);
-
-    game.endTurn(EndingType.Foul);
-    expect(game.getPlayerStats(1).totalFouls).toEqual(2);
+    expect(stats.totalFouls).toBe(3);
   });
 
   it('tracks total safeties', () => {

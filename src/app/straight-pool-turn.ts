@@ -7,8 +7,8 @@ export class StraightPoolTurn {
     constructor(
       public playerIndex?: number,
       public ending?: EndingType,
-      public ballsMade?: number,
-      public points?: number,
+      public ballsMade: number = 0,
+      public points: number = ballsMade,
       public continuation?: StraightPoolTurn) {}
 
       get totalPoints(): number {
