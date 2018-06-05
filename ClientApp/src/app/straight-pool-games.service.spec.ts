@@ -4,7 +4,6 @@ import { StraightPoolGamesService, BASE_URL } from './straight-pool-games.servic
 import { StraightPoolGame } from './straight-pool-game';
 import { StraightPoolTurn } from './straight-pool-turn';
 import { StraightPoolPlayer } from './straight-pool-player';
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Injector } from '@angular/core';
 
