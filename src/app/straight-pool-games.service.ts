@@ -6,12 +6,10 @@ import { StraightPoolPlayer } from './straight-pool-player';
 import { StraightPoolTurn } from './straight-pool-turn';
 import 'rxjs/add/operator/map';
 
-// TODO: rename to get rid of ServiceService
-
 export const BASE_URL = new InjectionToken<string>('BaseUrl');
 
 @Injectable()
-export class StraightPoolGameServiceService {
+export class StraightPoolGamesService {
 
   constructor(private client: HttpClient, @Inject(BASE_URL) public baseUrl: string) {
     if (baseUrl[baseUrl.length - 1] !== '/') {

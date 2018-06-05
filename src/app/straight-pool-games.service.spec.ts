@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { StraightPoolGameServiceService, BASE_URL } from './straight-pool-game-service.service';
+import { StraightPoolGamesService, BASE_URL } from './straight-pool-games.service';
 import { StraightPoolGame } from './straight-pool-game';
 import { StraightPoolTurn } from './straight-pool-turn';
 import { StraightPoolPlayer } from './straight-pool-player';
@@ -13,22 +13,22 @@ describe('StraightPoolGameServiceService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: BASE_URL, useValue: 'http://localhost/api/games' },
-        StraightPoolGameServiceService
+        StraightPoolGamesService
       ],
       imports: [ HttpClientTestingModule ]
     });
   });
 
-  it('should be created', inject([StraightPoolGameServiceService], (service: StraightPoolGameServiceService) => {
+  it('should be created', inject([StraightPoolGamesService], (service: StraightPoolGamesService) => {
     expect(service).toBeTruthy();
   }));
 
-  it('baseUrl ends with /', inject([StraightPoolGameServiceService], (service: StraightPoolGameServiceService) => {
+  it('baseUrl ends with /', inject([StraightPoolGamesService], (service: StraightPoolGamesService) => {
     expect(service.baseUrl).toEqual('http://localhost/api/games/');
   }));
 
-  it('Can load remote games', inject([HttpTestingController, StraightPoolGameServiceService],
-    (controller: HttpTestingController, service: StraightPoolGameServiceService) => {
+  it('Can load remote games', inject([HttpTestingController, StraightPoolGamesService],
+    (controller: HttpTestingController, service: StraightPoolGamesService) => {
     const game = service.loadGame('1').subscribe(g => {
       expect(g instanceof StraightPoolGame).toBeTruthy();
       expect(g).toBeTruthy();
