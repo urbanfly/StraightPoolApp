@@ -2,19 +2,18 @@ import { StraightPoolTurn } from './straight-pool-turn';
 import { EndingType } from './straight-pool-ending-type.enum';
 import { StraightPoolPlayer } from './straight-pool-player';
 import { StraightPoolPlayerStats } from './straight-pool-player-stats';
-import * as uuidv4 from 'uuid/v4';
 
 export class StraightPoolGame {
-    id: string = uuidv4();
+    id: string;
     turns: StraightPoolTurn[] = [];
     players: StraightPoolPlayer[];
     currentPlayerIndex = 0;
     ballsRemaining = 15;
 
-    constructor(public pointLimit: number = 100) {
-      this.players = [
-        new StraightPoolPlayer('Player1'),
-        new StraightPoolPlayer('Player2')
+    constructor(public pointLimit: number = 100, players: StraightPoolPlayer[] = null) {
+      this.players = players || [
+        new StraightPoolPlayer('Player 1'),
+        new StraightPoolPlayer('Player 2')
       ];
     }
 

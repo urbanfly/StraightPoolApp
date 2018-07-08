@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { StraightPoolPlayer } from '../straight-pool-player';
+import { StraightPoolPlayerStats } from '../straight-pool-player-stats';
 
 @Component({
   selector: 'app-player',
@@ -7,7 +7,7 @@ import { StraightPoolPlayer } from '../straight-pool-player';
   styleUrls: ['./player.component.css']
 })
 export class PlayerComponent implements OnInit {
-  @Input() player: StraightPoolPlayer;
+  @Input() player: StraightPoolPlayerStats;
   @Input() isActive: boolean;
 
   constructor() { }

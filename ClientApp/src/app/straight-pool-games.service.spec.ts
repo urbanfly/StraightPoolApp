@@ -4,7 +4,7 @@ import { StraightPoolGamesService, BASE_URL } from './straight-pool-games.servic
 import { StraightPoolGame } from './straight-pool-game';
 import { StraightPoolTurn } from './straight-pool-turn';
 import { StraightPoolPlayer } from './straight-pool-player';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController, RequestMatch } from '@angular/common/http/testing';
 import { Injector } from '@angular/core';
 
 describe('StraightPoolGameServiceService', () => {
@@ -68,5 +68,50 @@ describe('StraightPoolGameServiceService', () => {
       ],
       'currentPlayerIndex': 0
     });
+
+    controller.verify();
+  }));
+
+  it('Populates a unique ID when saving', inject([HttpTestingController, StraightPoolGamesService],
+    (controller: HttpTestingController, service: StraightPoolGamesService) => {
+    const game = new StraightPoolGame();
+    expect(game.id).toBeFalsy();
+
+    service.saveGame(game).subscribe(g => {
+      expect(g).toBeTruthy();
+      expect(g instanceof StraightPoolGame).toBeTruthy();
+      expect(g.id).toBeTruthy();
+    });
+
+    const req = controller.match(q => q.url.startsWith('http://localhost/api/games/'))[0];
+    expect(req).toBeTruthy();
+    req.flush(req.request.body, {status: 201, statusText: 'Created'});
+
+    expect(game.id).toBeTruthy();
+
+    controller.verify();
+  }));
+
+  it('PUTs to the game\'s id', inject([HttpTestingController, StraightPoolGamesService],
+    (controller: HttpTestingController, service: StraightPoolGamesService) => {
+    const game = new StraightPoolGame();
+
+    expect(game.id).toBeFalsy();
+
+    service.saveGame(game).subscribe(g => {
+      expect(g).toBe(game);
+    });
+
+    expect(game.id).toBeTruthy();
+
+    const req = controller.expectOne(`http://localhost/api/games/${game.id}`);
+    req.flush(JSON.parse(JSON.stringify(req.request.body)), {status: 201, statusText: 'Created'});
+
+    controller.verify();
+  }));
+
+  it('', inject([HttpTestingController, StraightPoolGamesService],
+    (controller: HttpTestingController, service: StraightPoolGamesService) => {
+    //
   }));
 });

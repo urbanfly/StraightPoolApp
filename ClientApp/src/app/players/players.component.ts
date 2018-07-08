@@ -23,7 +23,7 @@ export class PlayersComponent implements OnInit {
     totalFinishedRacks: 'Total Finished Racks',
     totalErrors: 'TotalErrors'
   };
-  private objectKeys = Object.keys;
+  objectKeys = Object.keys;
   @Input() game: StraightPoolGame;
 
   constructor() { }

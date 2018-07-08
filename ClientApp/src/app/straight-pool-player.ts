@@ -1,3 +1,4 @@
 export class StraightPoolPlayer {
-    constructor(public name?: string) {}
+    id: string;
+    constructor(public name?: string, public emailAddres?: string) {}
 }

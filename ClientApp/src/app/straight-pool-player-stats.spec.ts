@@ -6,7 +6,7 @@ import { EndingType } from './straight-pool-ending-type.enum';
 
 // TODO: Track the type of foul (Scratch, Intentional, General)
 
-fdescribe('StraightPoolPlayerStats', () => {
+describe('StraightPoolPlayerStats', () => {
   it('should create an instance', () => {
     expect(new StraightPoolPlayerStats(new StraightPoolPlayer(), 0, [])).toBeTruthy();
   });

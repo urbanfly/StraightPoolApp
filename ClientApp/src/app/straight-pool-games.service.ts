@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { StraightPoolPlayer } from './straight-pool-player';
 import { StraightPoolTurn } from './straight-pool-turn';
 import 'rxjs/add/operator/map';
+import * as uuidv4 from 'uuid/v4';
 
 export const BASE_URL = new InjectionToken<string>('BaseUrl');
 
@@ -29,6 +30,10 @@ export class StraightPoolGamesService {
   }
 
   public saveGame(game: StraightPoolGame): Observable<StraightPoolGame> {
-    return this.client.put(`${this.baseUrl}${game.id}`, game).map(this.hydrate);
+    if (!game.id) {
+      game.id = uuidv4();
+    }
+
+    return this.client.put(`${this.baseUrl}${game.id}`, game).map(g => Object.assign(game, this.hydrate(g)));
   }
 }
