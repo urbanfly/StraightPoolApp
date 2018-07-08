@@ -1,10 +1,11 @@
 import { Injectable, InjectionToken, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StraightPoolGame } from './straight-pool-game';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { StraightPoolPlayer } from './straight-pool-player';
 import { StraightPoolTurn } from './straight-pool-turn';
-import 'rxjs/add/operator/map';
+
 import * as uuidv4 from 'uuid/v4';
 
 export const BASE_URL = new InjectionToken<string>('BaseUrl');
@@ -26,7 +27,7 @@ export class StraightPoolGamesService {
   }
 
   public loadGame(id: string): Observable<StraightPoolGame> {
-    return this.client.get<StraightPoolGame>(`${this.baseUrl}${id}`).map(this.hydrate);
+    return this.client.get<StraightPoolGame>(`${this.baseUrl}${id}`).pipe(map(this.hydrate));
   }
 
   public saveGame(game: StraightPoolGame): Observable<StraightPoolGame> {
@@ -34,6 +35,6 @@ export class StraightPoolGamesService {
       game.id = uuidv4();
     }
 
-    return this.client.put(`${this.baseUrl}${game.id}`, game).map(g => Object.assign(game, this.hydrate(g)));
+    return this.client.put(`${this.baseUrl}${game.id}`, game).pipe(map(g => Object.assign(game, this.hydrate(g))));
   }
 }
