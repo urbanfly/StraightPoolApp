@@ -1,30 +1,42 @@
-<div>Race to {{ game.pointLimit }}</div>
-<div>{{ game.ballsRemaining }} balls remaining</div>
+<mat-toolbar color="accent">Race to {{ game.pointLimit }}</mat-toolbar>
 
-<app-players [game]="game"></app-players>
-
-<div>
-  <form *ngIf="!game.hasWinner">
-    <div>
-      <button type="button" (click)="newRack(0)">0</button>
-      <button type="button" (click)="newRack(1)">1</button>
-      <input type="radio"
-            name="balls{{i}}"
-            *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]" 
-            [value]="i" 
-            [(ngModel)]="ballsRemaining"
-            [disabled]="game.ballsRemaining < i">
-    </div>
-    <div>
-      <button type="button" (click)="miss()">Miss</button>
-      <button type="button" (click)="safety()">Safety</button>
-      <button type="button" (click)="foul()">Foul</button>
-      <button type="button" *ngIf="game.isOpeningBreak && ballsRemaining === 15" id="breakingFoul" (click)="breakingFoul()">Breaking Foul</button>
-      <button type="button" *ngIf="game.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers" (click)="game.switchPlayers()">Switch players</button>
-      <button type="button" *ngIf="game.canForceRerack && ballsRemaining === 15" id="forceRerack" (click)="game.endTurn('ForceRerack')">Re-rack</button>
-    </div>
-    <div *ngIf="game.canUndo">
-      <button type="button" (click)="game.undo()">Undo</button>
-    </div>
-  </form>
-</div>
+<mat-tab-group>
+  <mat-tab label="Game">
+    <mat-grid-list cols="2" rowHeight="3:1" role="list">
+      <mat-grid-tile *ngFor="let p of game.players" role="listitem">
+        <div layout="column" style="text-align: center">
+          <div style="text-align: center">{{ p.name }}</div>
+          <div style="font-size: 20pt">{{ game.getPlayerStatsByPlayer(p).score }}</div>
+      </div>
+    </mat-grid-tile>
+    </mat-grid-list>
+    <form *ngIf="!game.hasWinner">
+      <mat-grid-list cols="5" rowHeight="1:1">
+        <mat-grid-tile><button type="button" mat-button (click)="newRack(0)">0</button></mat-grid-tile>
+        <mat-grid-tile><button type="button" mat-button (click)="newRack(1)">1</button></mat-grid-tile>
+        <mat-grid-tile *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]"><button type="button"
+          mat-button
+          name="balls{{i}}"
+          (click)="ballsRemaining = i"
+          [ngClass]="{selected: ballsRemaining == i}"
+          [disabled]="game.ballsRemaining < i">{{i}}</button>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <div>
+        <button type="button" (click)="miss()">Miss</button>
+        <button type="button" (click)="safety()">Safety</button>
+        <button type="button" (click)="foul()">Foul</button>
+        <button type="button" *ngIf="game.isOpeningBreak && ballsRemaining === 15" id="breakingFoul" (click)="breakingFoul()">Breaking Foul</button>
+        <button type="button" *ngIf="game.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers" (click)="game.switchPlayers()">Switch players</button>
+        <button type="button" *ngIf="game.canForceRerack && ballsRemaining === 15" id="forceRerack" (click)="game.endTurn('ForceRerack')">Re-rack</button>
+      </div>
+      <div *ngIf="game.canUndo">
+        <button type="button" (click)="game.undo()">Undo</button>
+      </div>
+    </form>
+  </mat-tab>
+  <mat-tab label="Stats">
+    <app-players [game]="game"></app-players>
+  </mat-tab>
+  <mat-tab label="Details"></mat-tab>
+</mat-tab-group>

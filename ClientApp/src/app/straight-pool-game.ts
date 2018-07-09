@@ -52,6 +52,10 @@ export class StraightPoolGame {
       return new StraightPoolPlayerStats(this.players[playerIndex], playerIndex, this.turns);
     }
 
+    getPlayerStatsByPlayer(player: StraightPoolPlayer): StraightPoolPlayerStats {
+      return new StraightPoolPlayerStats(player, this.players.indexOf(player), this.turns);
+    }
+
     switchPlayers(): StraightPoolPlayer {
       this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
       return this.currentPlayer;

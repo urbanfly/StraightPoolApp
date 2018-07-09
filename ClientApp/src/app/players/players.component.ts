@@ -9,7 +9,6 @@ import { StraightPoolPlayerStats } from '../straight-pool-player-stats';
 })
 export class PlayersComponent implements OnInit {
   template = {
-    playerName: 'Name',
     score: 'Score',
     avgBallsPerTurn: 'Avg',
     standardDeviation: 'StdDv',
@@ -21,7 +20,7 @@ export class PlayersComponent implements OnInit {
     totalSafeties: 'Total Safeties',
     totalSuccessfulSafeties: 'Total Successful Safeties',
     totalFinishedRacks: 'Total Finished Racks',
-    totalErrors: 'TotalErrors'
+    totalErrors: 'Total Errors'
   };
   objectKeys = Object.keys;
   @Input() game: StraightPoolGame;
@@ -31,10 +30,16 @@ export class PlayersComponent implements OnInit {
   ngOnInit() {
   }
 
-  get stats(): StraightPoolPlayerStats[] {
+  get stats(): any[] {
     if (this.game === undefined || this.game.players === undefined) {
       return null;
     }
-    return this.game.players.map((p, i) => this.game.getPlayerStats(i));
+
+    const playerStats = this.game.players.map((p, i) => this.game.getPlayerStats(i));
+    return Object.keys(this.template).map(k => {
+      const o = { title: k };
+      playerStats.forEach(p => o[p.playerName] = p[k]);
+      return o;
+    });
   }
 }
