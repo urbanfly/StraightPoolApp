@@ -3,12 +3,12 @@
 <mat-tab-group>
   <mat-tab label="Game">
     <mat-grid-list cols="2" rowHeight="3:1" role="list">
-      <mat-grid-tile *ngFor="let p of game.players" role="listitem">
-        <div layout="column" style="text-align: center">
+      <mat-grid-tile *ngFor="let p of game.players" role="listitem" [ngClass]="{'activePlayer': game.currentPlayer === p}">
+        <div style="text-align: center">
           <div style="text-align: center">{{ p.name }}</div>
           <div style="font-size: 20pt">{{ game.getPlayerStatsByPlayer(p).score }}</div>
-      </div>
-    </mat-grid-tile>
+        </div>
+      </mat-grid-tile>
     </mat-grid-list>
     <form *ngIf="!game.hasWinner">
       <mat-grid-list cols="5" rowHeight="1:1">
