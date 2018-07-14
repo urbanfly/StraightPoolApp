@@ -10,7 +10,7 @@ import { PlayerComponent } from './player/player.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -32,7 +32,8 @@ import {MatTableModule} from '@angular/material/table';
     MatTabsModule,
     MatToolbarModule,
     MatGridListModule,
-    MatTableModule
+    MatTableModule,
+    MatIconModule
   ],
   providers: [StraightPoolRulesService],
   bootstrap: [AppComponent]

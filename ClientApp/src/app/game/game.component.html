@@ -3,7 +3,7 @@
 <mat-tab-group>
   <mat-tab label="Game">
     <mat-grid-list cols="2" rowHeight="3:1" role="list">
-      <mat-grid-tile *ngFor="let p of game.players" role="listitem" [ngClass]="{'activePlayer': game.currentPlayer === p}">
+      <mat-grid-tile *ngFor="let p of game.players" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
         <div style="text-align: center">
           <div style="text-align: center">{{ p.name }}</div>
           <div style="font-size: 20pt">{{ game.getPlayerStatsByPlayer(p).score }}</div>
@@ -14,25 +14,45 @@
       <mat-grid-list cols="5" rowHeight="1:1">
         <!--TODO: Restore 15th ball option -->
         <!-- <mat-grid-tile><button type="button" mat-button (click)="newRack(0)">0</button></mat-grid-tile>-->
-        <mat-grid-tile><button type="button" mat-mini-fab (click)="newRack(1)">1</button></mat-grid-tile>
-        <mat-grid-tile *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]"><button type="button"
-          mat-mini-fab
-          name="balls{{i}}"
-          (click)="ballsRemaining = i"
-          [color]="ballsRemaining == i ? 'primary' : 'accent'"
-          [disabled]="game.ballsRemaining < i">{{i}}</button>
+        <mat-grid-tile>
+          <button type="button" mat-mini-fab (click)="newRack(1)">1</button>
+        </mat-grid-tile>
+        <mat-grid-tile *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
+          <button type="button" mat-mini-fab name="balls{{i}}" (click)="ballsRemaining = i" [color]="ballsRemaining == i ? 'primary' : 'accent'"
+            [disabled]="game.ballsRemaining < i">{{i}}</button>
         </mat-grid-tile>
       </mat-grid-list>
-      <div style="text-align: center; padding: 5px;">
-        <button mat-raised-button type="button" color="warn" (click)="foul()">Foul</button>
-        <button mat-raised-button type="button" color="primary" (click)="miss()">Miss</button>
-        <button mat-raised-button type="button" color="accent" (click)="safety()">Safety</button>
-      </div>
-      <div style="text-align: center; padding: 5px;">
-        <button mat-stroked-button type="button" color="warn" *ngIf="game.isOpeningBreak && ballsRemaining === 15" id="breakingFoul" (click)="breakingFoul()">Breaking Foul</button>
-        <button mat-stroked-button type="button" color="primary" *ngIf="game.canUndo" (click)="game.undo()">Undo</button>
-        <button mat-stroked-button type="button" color="accent" *ngIf="game.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers" (click)="game.switchPlayers()">Switch players</button>
-        <button mat-stroked-button type="button" color="accent" *ngIf="game.canForceRerack && ballsRemaining === 15" id="forceRerack" (click)="game.endTurn('ForceRerack')">Re-rack</button>
+      <div class="actionButtons">
+        <table style="margin-left:auto;margin-right:auto;">
+          <tr>
+            <td>
+              <button mat-raised-button type="button" color="warn" (click)="foul()">Foul</button>
+            </td>
+            <td>
+              <button mat-raised-button type="button" color="primary" (click)="miss()">Miss</button>
+            </td>
+            <td>
+              <button mat-raised-button type="button" color="accent" (click)="safety()">Safety</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button mat-stroked-button type="button" color="warn" *ngIf="game.isOpeningBreak && ballsRemaining === 15" id="breakingFoul"
+                (click)="breakingFoul()">Breaking</button>
+            </td>
+            <td>
+              <button mat-icon-button type="button" color="primary" *ngIf="game.canUndo" (click)="game.undo()">
+                <mat-icon>undo</mat-icon>
+              </button>
+            </td>
+            <td>
+              <button mat-stroked-button type="button" color="accent" *ngIf="game.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers"
+                (click)="game.switchPlayers()">Switch</button>
+              <button mat-stroked-button type="button" color="accent" *ngIf="game.canForceRerack && ballsRemaining === 15" id="forceRerack"
+                (click)="game.endTurn('ForceRerack')">Re-rack</button>
+            </td>
+          </tr>
+        </table>
       </div>
     </form>
   </mat-tab>

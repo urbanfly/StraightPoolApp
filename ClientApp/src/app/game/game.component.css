@@ -2,3 +2,20 @@
   background: #673ab7;
   color: white;
 }
+
+.onTwoFouls {
+  color: red;
+}
+
+.activePlayer.onTwoFouls {
+  background: red;
+  color: white;
+}
+
+.actionButtons {
+  text-align: center;
+}
+
+.actionButtons button {
+  margin: 5px;
+}
