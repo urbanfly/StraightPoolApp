@@ -4,6 +4,7 @@ import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
 import { StraightPoolTurn } from '../straight-pool-turn';
 import { Observable, Subject } from 'rxjs';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-game',
@@ -15,18 +16,20 @@ export class GameComponent implements OnInit {
   ballsRemaining = 15;
   obsTurns = new Subject<StraightPoolTurn[]>();
 
-  constructor(public rules: StraightPoolRulesService) {
+  constructor(public rules: StraightPoolRulesService, public snackBar: MatSnackBar) {
     this.game = rules.currentGame = rules.newGame();
-   }
+  }
 
   ngOnInit() {
   }
 
-  private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining) {
-    this.game.endTurn(ending, ballsRemaining);
+  private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining): StraightPoolTurn {
+    const turn = this.game.endTurn(ending, ballsRemaining);
     this.ballsRemaining = this.game.ballsRemaining;
 
     this.obsTurns.next(this.game.turns);
+
+    return turn;
   }
 
   miss() { this.endTurn(EndingType.Miss); }
@@ -34,5 +37,10 @@ export class GameComponent implements OnInit {
   breakingFoul() { this.endTurn(EndingType.BreakingFoul); }
   safety() { this.endTurn(EndingType.Safety); }
 
-  newRack(ballsRemaining: number) { this.endTurn(EndingType.NewRack, ballsRemaining); }
+  newRack(ballsRemaining: number) {
+    const turn = this.endTurn(EndingType.NewRack, ballsRemaining);
+    const barRef = this.snackBar.open('Nice job!', 'Include 15th ball', { duration: 5000 });
+    const sub = barRef.onAction().subscribe(() => { turn.include15thBall(); });
+    barRef.afterDismissed().subscribe(() => sub.unsubscribe);
+  }
 }
