@@ -24,3 +24,57 @@
 .actionButtons button {
   margin: 5px;
 }
+
+.turnList {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.turn {
+  border-radius: 10px;
+  padding: 5px;
+  min-width: 100px;
+  text-align: center;
+  margin: 5px;
+}
+
+.turn.player0 {
+  align-self: flex-start;
+  border-top-left-radius: 0px;
+}
+
+.turn.player1 {
+  align-self: flex-end;
+  border-top-right-radius: 0px;
+}
+
+.turn.Miss {
+  background: gray;
+}
+
+.turn.Foul, .turn.BreakingFoul {
+  background: white;
+  border: 1px solid red;
+  color: red;
+}
+
+.turn.Safety, .turn.ForceRerack  {
+  background: yellow;
+  border: 1px solid black;
+}
+
+.turn.NewRack {
+  background: green;
+  color: white;
+}
+.turn.BreakingFoul {
+  font-style: italic;
+}
+.turn.ThreeConsecutiveFouls {
+  background: red;
+  color: white;
+}
+.turn.ForceRerack {
+  font-style: italic;
+}
