@@ -50,7 +50,7 @@
 }
 
 .turn.Miss {
-  background: gray;
+  background: lightgray;
 }
 
 .turn.Foul, .turn.BreakingFoul {
