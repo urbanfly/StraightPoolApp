@@ -60,18 +60,27 @@
     <app-players [game]="game"></app-players>
   </mat-tab>
   <mat-tab label="Details">
-    <div>
-      <mat-grid-list cols="2" rowHeight="3:1" role="list">
-        <mat-grid-tile *ngFor="let p of game.players" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
-          <div style="text-align: center">
-            <div style="text-align: center">{{ p.name }}</div>
-            <div style="font-size: 20pt">{{ game.getPlayerStatsByPlayer(p).score }}</div>
-          </div>
-        </mat-grid-tile>
-      </mat-grid-list>
-      <div class="turnList">
-        <div *ngFor="let turn of game.turns" class="turn" [ngClass]="['player'+turn.playerIndex, turn.ending]">{{ turn.totalPoints }}</div>
+    <mat-grid-list cols="2" rowHeight="3:1" role="list">
+      <mat-grid-tile *ngFor="let p of game.players" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
+        <div style="text-align: center">
+          <div style="text-align: center">{{ p.name }}</div>
+          <div style="font-size: 20pt">{{ game.getPlayerStatsByPlayer(p).score }}</div>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <div class="turnList">
+      <div *ngFor="let turn of game.turns" class="turn" [ngClass]="['player'+turn.playerIndex, turn.ending]">
+        {{ turn.ending }}
+        <span class="points">{{ turn.totalPoints }}</span>
       </div>
+    </div>
+    <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
+      <button mat-icon-button
+        type="button" color="primary"
+        *ngIf="game.canUndo"
+        (click)="game.undo()">
+        <mat-icon>undo</mat-icon>
+      </button>
     </div>
   </mat-tab>
 </mat-tab-group>
