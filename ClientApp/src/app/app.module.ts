@@ -16,13 +16,18 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { HomeComponent } from './home/home.component';
+import { CreateComponent } from './create/create.component';
+import { AppRoutingModule } from './/app-routing.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
     PlayersComponent,
-    PlayerComponent
+    PlayerComponent,
+    HomeComponent,
+    CreateComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +40,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatGridListModule,
     MatTableModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    AppRoutingModule
   ],
   providers: [StraightPoolRulesService],
   bootstrap: [AppComponent]
