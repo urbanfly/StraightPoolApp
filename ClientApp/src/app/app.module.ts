@@ -18,7 +18,10 @@ import {MatTableModule} from '@angular/material/table';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { HomeComponent } from './home/home.component';
 import { CreateComponent } from './create/create.component';
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
+import { BASE_URL, StraightPoolGamesService } from './straight-pool-games.service';
+import { LocalStraightPoolGamesService } from './local-straight-pool-games.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -41,9 +44,13 @@ import { AppRoutingModule } from './/app-routing.module';
     MatTableModule,
     MatIconModule,
     MatSnackBarModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [StraightPoolRulesService],
+  providers: [
+    { provide: BASE_URL, useValue: 'http://localhost/api/games' },
+    { provide: StraightPoolGamesService, useClass: LocalStraightPoolGamesService }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -5,13 +5,17 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StraightPoolPlayer } from './straight-pool-player';
 import { StraightPoolTurn } from './straight-pool-turn';
-
 import * as uuidv4 from 'uuid/v4';
 
 export const BASE_URL = new InjectionToken<string>('BaseUrl');
 
+export interface IStraightPoolGamesService {
+  loadGame(id: string): Observable<StraightPoolGame>;
+  saveGame(game: StraightPoolGame): Observable<StraightPoolGame>;
+}
+
 @Injectable()
-export class StraightPoolGamesService {
+export class StraightPoolGamesService implements IStraightPoolGamesService {
 
   constructor(private client: HttpClient, @Inject(BASE_URL) public baseUrl: string) {
     if (baseUrl[baseUrl.length - 1] !== '/') {

@@ -1,5 +1,7 @@
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { StraightPoolRulesService } from '../straight-pool-rules.service';
+import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
 import { StraightPoolTurn } from '../straight-pool-turn';
@@ -16,11 +18,15 @@ export class GameComponent implements OnInit {
   ballsRemaining = 15;
   obsTurns = new Subject<StraightPoolTurn[]>();
 
-  constructor(public rules: StraightPoolRulesService, public snackBar: MatSnackBar) {
-    this.game = rules.currentGame = rules.newGame();
+  constructor(private games: StraightPoolGamesService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private location: Location) {
   }
 
   ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.games.loadGame(id).subscribe(g => this.game = g);
   }
 
   private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining): StraightPoolTurn {
