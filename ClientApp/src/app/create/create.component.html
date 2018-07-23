@@ -1,3 +1,23 @@
+<mat-form-field>
+  <input matInput [(ngModel)]="params.raceTo" placeholder="What is the race to?" />
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [(ngModel)]="params.player0Name" type="text" placeholder="player 1 name" />
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [(ngModel)]="params.player1Name" type="text" placeholder="player 2 name" />
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [(ngModel)]="params.player0Handicap" type="number" placeholder="p1 handicap" />
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [(ngModel)]="params.player1Handicap" type="number" placeholder="p2 handicap" />
+</mat-form-field>
+
 <button (click)="createGame()" mat-fab color="primary" style="position: fixed; bottom:16px;right:16px">
   <mat-icon aria-label="Start this game">play_arrow</mat-icon>
 </button>

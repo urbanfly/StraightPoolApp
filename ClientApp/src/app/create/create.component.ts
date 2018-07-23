@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
+import { StraightPoolPlayer } from '../straight-pool-player';
 
 @Component({
   selector: 'app-create',
@@ -10,15 +11,28 @@ import { StraightPoolGame } from '../straight-pool-game';
 })
 export class CreateComponent implements OnInit {
 
+  params = new GameParameters();
+
   constructor(private games: StraightPoolGamesService, private router: Router) { }
 
   ngOnInit() {
   }
 
   createGame() {
-    const game = new StraightPoolGame();
+    const game = new StraightPoolGame(this.params.raceTo, [
+      new StraightPoolPlayer(this.params.player0Name),
+      new StraightPoolPlayer(this.params.player1Name)
+    ]);
     this.games.saveGame(game).subscribe(g => {
       this.router.navigate(['game', g.id]);
     });
   }
+}
+
+class GameParameters {
+  raceTo: number;
+  player0Name: string;
+  player0Handicap: number;
+  player1Name: string;
+  player1Handicap: number;
 }

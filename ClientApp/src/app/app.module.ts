@@ -10,12 +10,13 @@ import { PlayerComponent } from './player/player.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatIconModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatInputModule } from '@angular/material';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import { HomeComponent } from './home/home.component';
 import { CreateComponent } from './create/create.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -44,6 +45,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatTableModule,
     MatIconModule,
     MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule,
     AppRoutingModule,
     HttpClientModule
   ],
