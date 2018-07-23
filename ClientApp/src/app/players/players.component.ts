@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { StraightPoolGame } from '../straight-pool-game';
-import { StraightPoolPlayerStats } from '../straight-pool-player-stats';
 
 @Component({
   selector: 'app-players',
@@ -9,11 +8,11 @@ import { StraightPoolPlayerStats } from '../straight-pool-player-stats';
 })
 export class PlayersComponent implements OnInit {
   template = {
-    score: 'Score',
-    avgBallsPerTurn: 'Avg',
-    standardDeviation: 'StdDv',
-    consecutiveFouls: 'Fouls',
-    highRun: 'High Run',
+    // TODO: put these into the score boxes
+    // avgBallsPerTurn: 'Avg',
+    // standardDeviation: 'StdDv',
+    // consecutiveFouls: 'Fouls',
+    // highRun: 'High Run',
     top5HighRuns: 'Top 5',
     totalFouls: 'Total Fouls',
     totalMisses: 'Total Misses',

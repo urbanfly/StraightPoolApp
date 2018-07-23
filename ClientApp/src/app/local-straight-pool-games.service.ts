@@ -9,7 +9,7 @@ export class LocalStraightPoolGamesService implements IStraightPoolGamesService 
   private games: { [id: string]: StraightPoolGame; } = { };
 
   loadGame(id: string): Observable<StraightPoolGame> {
-    return of(this.games[id]);
+    return of(this.games[id] || new StraightPoolGame());
   }
 
   saveGame(game: StraightPoolGame): Observable<StraightPoolGame> {

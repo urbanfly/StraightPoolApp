@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
 import { StraightPoolRulesService } from './straight-pool-rules.service';
 import { PlayersComponent } from './players/players.component';
-import { PlayerComponent } from './player/player.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,7 +28,6 @@ import { HttpClientModule } from '@angular/common/http';
     AppComponent,
     GameComponent,
     PlayersComponent,
-    PlayerComponent,
     HomeComponent,
     CreateComponent
   ],

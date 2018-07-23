@@ -5,15 +5,20 @@
     <!-- Title Column -->
     <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element" align="left">{{ template[element.title] }}</td>
+        <td mat-cell *matCellDef="let element" align="center">{{ template[element.title] }}</td>
     </ng-container>
 
-    <!-- Player Columns -->
-    <ng-container *ngFor="let p of game.players" [matColumnDef]="p.name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header align="center">{{ p.name }}</th>
-        <td mat-cell *matCellDef="let element" align="center">{{ element[p.name] }}</td>
+    <!-- Player1 Columns -->
+    <ng-container matColumnDef="player1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header align="center">{{ game.players[0].name }}</th>
+        <td mat-cell *matCellDef="let element" align="center">{{ element[game.players[0].name] }}</td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['title', 'Player 1', 'Player 2']; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['title', 'Player 1', 'Player 2'];"></tr>
+    <!-- Player2 Columns -->
+    <ng-container matColumnDef="player2">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header align="center">{{ game.players[1].name }}</th>
+        <td mat-cell *matCellDef="let element" align="center">{{ element[game.players[1].name] }}</td>
+    </ng-container>
+
+    <tr mat-row *matRowDef="let row; columns: ['player1', 'title', 'player2'];"></tr>
 </table>
