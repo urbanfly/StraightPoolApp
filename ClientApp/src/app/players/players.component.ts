@@ -8,11 +8,6 @@ import { StraightPoolGame } from '../straight-pool-game';
 })
 export class PlayersComponent implements OnInit {
   template = {
-    // TODO: put these into the score boxes
-    // avgBallsPerTurn: 'Avg',
-    // standardDeviation: 'StdDv',
-    // consecutiveFouls: 'Fouls',
-    // highRun: 'High Run',
     top5HighRuns: 'Top 5',
     totalFouls: 'Total Fouls',
     totalMisses: 'Total Misses',
