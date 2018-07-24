@@ -11,11 +11,26 @@ import { StraightPoolPlayer } from '../straight-pool-player';
 })
 export class CreateComponent implements OnInit {
 
-  params = new GameParameters();
+  params: GameParameters = {
+    raceTo: 100,
+    player0Handicap: 0,
+    player1Handicap: 0
+  };
 
   constructor(private games: StraightPoolGamesService, private router: Router) { }
 
   ngOnInit() {
+  }
+
+  onLimitPanned(e: HammerInput) {
+    const distance = Math.round(e.distance * e.velocityX * .25);
+    this.params.raceTo = Math.max(0, Math.min((this.params.raceTo || 0) + distance, 1000));
+  }
+
+  onHandicapPanned(player: number, e: HammerInput) {
+    const distance = Math.round(e.distance * e.velocityX * .25);
+    const currentValue = this.params[`player${player}Handicap`];
+    this.params[`player${player}Handicap`] = Math.max(0, Math.min((currentValue || 0) + distance, this.params.raceTo));
   }
 
   createGame() {
@@ -31,8 +46,8 @@ export class CreateComponent implements OnInit {
 
 class GameParameters {
   raceTo: number;
-  player0Name: string;
+  player0Name?: string;
   player0Handicap: number;
-  player1Name: string;
+  player1Name?: string;
   player1Handicap: number;
 }

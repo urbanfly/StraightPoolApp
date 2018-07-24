@@ -1,4 +1,4 @@
-<mat-form-field>
+<mat-form-field (panmove)="onLimitPanned($event)">
   <input matInput [(ngModel)]="params.raceTo" placeholder="What is the race to?" />
 </mat-form-field>
 
@@ -10,11 +10,11 @@
   <input matInput [(ngModel)]="params.player1Name" type="text" placeholder="player 2 name" />
 </mat-form-field>
 
-<mat-form-field>
+<mat-form-field (panmove)="onHandicapPanned(0, $event)">
   <input matInput [(ngModel)]="params.player0Handicap" type="number" placeholder="p1 handicap" />
 </mat-form-field>
 
-<mat-form-field>
+<mat-form-field (panmove)="onHandicapPanned(1, $event)">
   <input matInput [(ngModel)]="params.player1Handicap" type="number" placeholder="p2 handicap" />
 </mat-form-field>
 
