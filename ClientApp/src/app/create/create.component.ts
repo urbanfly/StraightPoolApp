@@ -23,12 +23,12 @@ export class CreateComponent implements OnInit {
   }
 
   onLimitPanned(e: HammerInput) {
-    const distance = Math.round(e.distance * e.velocityX * .25);
+    const distance = Math.round(e.distance * e.velocityX * .1);
     this.params.raceTo = Math.max(0, Math.min((this.params.raceTo || 0) + distance, 1000));
   }
 
   onHandicapPanned(player: number, e: HammerInput) {
-    const distance = Math.round(e.distance * e.velocityX * .25);
+    const distance = Math.round(e.distance * e.velocityX * .1);
     const currentValue = this.params[`player${player}Handicap`];
     this.params[`player${player}Handicap`] = Math.max(0, Math.min((currentValue || 0) + distance, this.params.raceTo));
   }
