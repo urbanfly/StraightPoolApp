@@ -16,6 +16,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSliderModule} from '@angular/material/slider';
 import { HomeComponent } from './home/home.component';
 import { CreateComponent } from './create/create.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -45,6 +46,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatSnackBarModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSliderModule,
     AppRoutingModule,
     HttpClientModule
   ],

@@ -1,22 +1,27 @@
-<mat-form-field (panmove)="onLimitPanned($event)">
-  <input matInput [(ngModel)]="params.raceTo" type="number" placeholder="What is the race to?" />
-</mat-form-field>
+<mat-label>
+  What is the game limit?
+</mat-label>
+<mat-slider thumbLabel [(ngModel)]="params.raceTo" max="200" min="0" step="5" tickInterval="10">
+</mat-slider>
 
-<mat-form-field>
-  <input matInput [(ngModel)]="params.player0Name" type="text" placeholder="player 1 name" />
-</mat-form-field>
+<div style="display: flex; flex-direction: row;">
+  <div>
+    <mat-form-field>
+      <input matInput [(ngModel)]="params.player0Name" type="text" placeholder="Player 1 name" />
+    </mat-form-field>
+    <mat-slider thumbLabel [(ngModel)]="params.player0Handicap" [max]="params.raceTo" min="0" step="1" tickInterval="10">
+    </mat-slider>
+  </div>
 
-<mat-form-field>
-  <input matInput [(ngModel)]="params.player1Name" type="text" placeholder="player 2 name" />
-</mat-form-field>
+  <div>
+    <mat-form-field>
+      <input matInput [(ngModel)]="params.player1Name" type="text" placeholder="Player 2 name" />
+    </mat-form-field>
 
-<mat-form-field (panmove)="onHandicapPanned(0, $event)">
-  <input matInput [(ngModel)]="params.player0Handicap" type="number" placeholder="p1 handicap" />
-</mat-form-field>
-
-<mat-form-field (panmove)="onHandicapPanned(1, $event)">
-  <input matInput [(ngModel)]="params.player1Handicap" type="number" placeholder="p2 handicap" />
-</mat-form-field>
+    <mat-slider thumbLabel [(ngModel)]="params.player1Handicap" [max]="params.raceTo" min="0" step="1" tickInterval="10">
+    </mat-slider>
+  </div>
+</div>
 
 <button (click)="createGame()" mat-fab color="primary" style="position: fixed; bottom:16px;right:16px">
   <mat-icon aria-label="Start this game">play_arrow</mat-icon>
