@@ -11,3 +11,7 @@ Available pre-built themes:
 body {
     margin: 0px;
 }
+
+.mat-tab-label {
+  width: 33.3%;
+}
