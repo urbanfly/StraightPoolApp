@@ -1,15 +1,33 @@
 <mat-toolbar color="accent">Race to {{ game.pointLimit }}</mat-toolbar>
 
-<mat-grid-list cols="2" rowHeight="3:1" role="list">
-  <mat-grid-tile *ngFor="let p of game.players" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
+<mat-grid-list cols="9" rowHeight="8:11" role="list">
+  <mat-grid-tile *ngIf="game.players[0] as p" colspan="4" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
     <div style="text-align: center; width:100%;" *ngIf="game.getPlayerStatsByPlayer(p) as stats">
+      <div style="position:absolute; right:5px; top:0px; float:right; display: flex; flex-direction: column; font-size:small; justify-content: space-evenly; height:100%;">
+        <div>{{stats.highRun | number:'1.0-0'}}</div>
+        <div>{{stats.avgBallsPerTurn | number:'1.0-2'}}</div>
+        <div>{{stats.standardDeviation | number:'1.0-2'}}</div>
+      </div>
       <div style="text-align: center; font-size: small;">{{ p.name }}</div>
       <div style="font-size: 20pt">{{ stats.score }}</div>
-      <div style="display: flex; flex-direction: row; font-size:small; justify-content: space-evenly; width:100%;">
-        <div>Max: {{stats.highRun}}</div>
-        <div>Avg: {{stats.avgBallsPerTurn}}</div>
-        <div>StDv: {{stats.standardDeviation}}</div>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div style="text-align: center; display: flex; flex-direction: column; font-size:small; justify-content: space-evenly; height:100%;">
+      <div>Max</div>
+      <div>Avg</div>
+      <div>StDv</div>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile *ngIf="game.players[1] as p" colspan="4" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
+    <div style="text-align: center; width:100%;" *ngIf="game.getPlayerStatsByPlayer(p) as stats">
+      <div style="position:absolute; left:5px; top:0px; float:left; display: flex; flex-direction: column; font-size:small; justify-content: space-evenly; height:100%;">
+        <div>{{stats.highRun | number:'1.0-0'}}</div>
+        <div>{{stats.avgBallsPerTurn | number:'1.0-2'}}</div>
+        <div>{{stats.standardDeviation | number:'1.0-2'}}</div>
       </div>
+      <div style="text-align: center; font-size: small;">{{ p.name }}</div>
+      <div style="font-size: 20pt">{{ stats.score }}</div>
     </div>
   </mat-grid-tile>
 </mat-grid-list>
