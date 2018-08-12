@@ -49,4 +49,9 @@ export class GameComponent implements OnInit {
     const sub = barRef.onAction().subscribe(() => { turn.include15thBall(); });
     barRef.afterDismissed().subscribe(() => sub.unsubscribe);
   }
+
+  undo() {
+    const turn = this.game.undo();
+    this.ballsRemaining = this.game.ballsRemaining;
+  }
 }

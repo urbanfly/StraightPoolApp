@@ -63,7 +63,7 @@
                 (click)="breakingFoul()">Breaking</button>
             </td>
             <td>
-              <button mat-icon-button type="button" color="primary" *ngIf="game.canUndo" (click)="game.undo()">
+              <button mat-icon-button type="button" color="primary" *ngIf="game.canUndo" (click)="undo()">
                 <mat-icon>undo</mat-icon>
               </button>
             </td>
@@ -92,7 +92,7 @@
       <button mat-icon-button
         type="button" color="primary"
         *ngIf="game.canUndo"
-        (click)="game.undo()">
+        (click)="undo()">
         <mat-icon>undo</mat-icon>
       </button>
     </div>
