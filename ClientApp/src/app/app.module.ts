@@ -9,20 +9,13 @@ import { PlayersComponent } from './players/players.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatIconModule, MatInputModule } from '@angular/material';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {MatTableModule} from '@angular/material/table';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSliderModule} from '@angular/material/slider';
 import { HomeComponent } from './home/home.component';
 import { CreateComponent } from './create/create.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BASE_URL, StraightPoolGamesService } from './straight-pool-games.service';
 import { LocalStraightPoolGamesService } from './local-straight-pool-games.service';
 import { HttpClientModule } from '@angular/common/http';
+import { MaterialModule } from './material/material.module';
 
 @NgModule({
   declarations: [
@@ -37,18 +30,9 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     BrowserAnimationsModule,
-    MatButtonModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatGridListModule,
-    MatTableModule,
-    MatIconModule,
-    MatSnackBarModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSliderModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    MaterialModule
   ],
   providers: [
     { provide: BASE_URL, useValue: 'http://localhost/api/games' },

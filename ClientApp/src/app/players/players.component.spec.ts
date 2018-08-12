@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PlayersComponent } from './players.component';
-import { StraightPoolRulesService } from '../straight-pool-rules.service';
+import { MaterialModule } from '../material/material.module';
 
 describe('PlayersComponent', () => {
   let component: PlayersComponent;
@@ -10,7 +9,9 @@ describe('PlayersComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PlayersComponent ],
-      providers: [StraightPoolRulesService],
+      imports: [
+        MaterialModule,
+      ],
     })
     .compileComponents();
   }));

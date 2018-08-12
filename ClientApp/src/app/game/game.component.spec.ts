@@ -1,11 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { APP_BASE_HREF } from '@angular/common';
 import { GameComponent } from './game.component';
 import { FormsModule } from '@angular/forms';
-import { StraightPoolRulesService } from '../straight-pool-rules.service';
 import { PlayersComponent } from '../players/players.component';
-import { By } from '@angular/platform-browser';
 import { EndingType } from '../straight-pool-ending-type.enum';
+import { MaterialModule } from '../material/material.module';
+import { StraightPoolGamesService, BASE_URL } from '../straight-pool-games.service';
+import { LocalStraightPoolGamesService } from '../local-straight-pool-games.service';
+import { RouterModule } from '../../../node_modules/@angular/router';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -17,9 +19,15 @@ describe('GameComponent', () => {
         GameComponent, PlayersComponent
       ],
       imports: [
-        FormsModule
+        FormsModule,
+        MaterialModule,
+        RouterModule.forRoot([]),
       ],
-      providers: [StraightPoolRulesService],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: 'http://localhost/api/games' },
+        { provide: BASE_URL, useValue: 'http://localhost/api/games' },
+        { provide: StraightPoolGamesService, useClass: LocalStraightPoolGamesService }
+      ],
     })
     .compileComponents();
   }));
