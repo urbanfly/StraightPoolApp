@@ -3,6 +3,7 @@ import { EndingType } from './straight-pool-ending-type.enum';
 export class StraightPoolTurn {
     successfulSafety?: boolean;
     includes15thBall = false;
+    ballsRemaining: number;
 
     constructor(
       public playerIndex?: number,

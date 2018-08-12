@@ -85,6 +85,7 @@ export class StraightPoolGame {
       const lastTurn = this.getLastTurn();
       const continuation = (lastTurn && lastTurn.ending === EndingType.NewRack) ? lastTurn : null;
       const thisTurn = this.getPlayerStats(this.currentPlayerIndex).getTurn(ending, ballsMade, continuation);
+      thisTurn.ballsRemaining = ballsRemaining;
       thisTurn.playerIndex = this.currentPlayerIndex;
 
       if (lastTurn && lastTurn.ending === EndingType.Safety) {
@@ -127,15 +128,12 @@ export class StraightPoolGame {
       }
 
       this.currentPlayerIndex = turn.playerIndex;
-      if (turn.ending === EndingType.NewRack) {
-        this.ballsRemaining = turn.ballsMade + (turn.includes15thBall ? 0 : 1);
-      } else {
-        this.ballsRemaining += turn.ballsMade;
-      }
 
       if (turn.continuation) {
         this.turns.push(turn.continuation);
       }
+
+      this.ballsRemaining = this.turns.length === 0 ? 15 : this.turns[this.turns.length - 1].ballsRemaining;
 
       return turn;
     }

@@ -82,10 +82,13 @@ describe('StraightPoolGame', () => {
 
   it('detects 3 consecutive fouls', () => {
     const game = new StraightPoolGame();
+
+    game.endTurn(EndingType.Foul, 14); // p1
+    game.endTurn(EndingType.Miss); // p2
+
     game.endTurn(EndingType.Foul); // p1
     game.endTurn(EndingType.Miss); // p2
-    game.endTurn(EndingType.Foul); // p1
-    game.endTurn(EndingType.Miss); // p2
+
     const turn = game.endTurn(EndingType.Foul); // p1
 
     expect(turn.ending).toEqual(EndingType.ThreeConsecutiveFouls);
@@ -223,7 +226,6 @@ describe('StraightPoolGame', () => {
       .toBeUndefined();
   });
 
-
   it('uses opening-break rules after three consecutive fouls', () => {
     const game = new StraightPoolGame();
     expect(game.isOpeningBreak).toBeTruthy();
@@ -333,5 +335,30 @@ describe('StraightPoolGame', () => {
 
     game.undo();
     expect(game.canUndo).toBeFalsy();
+  });
+
+  it('undo restores balls remaining after undoing 3-foul', () => {
+    const game = new StraightPoolGame();
+    const stats = game.getPlayerStats(0);
+
+    game.endTurn(EndingType.Foul, 5); // one
+    game.endTurn(EndingType.Miss);
+
+    expect(stats.consecutiveFouls).toBe(1);
+
+    game.endTurn(EndingType.Foul); // two
+    game.endTurn(EndingType.Miss);
+
+    expect(stats.consecutiveFouls).toBe(2);
+    expect(game.ballsRemaining).toBe(5);
+
+    const turn = game.endTurn(EndingType.Foul); // three
+
+    expect(turn.ending).toBe(EndingType.ThreeConsecutiveFouls);
+    expect(game.ballsRemaining).toBe(15);
+
+    game.undo();
+
+    expect(game.ballsRemaining).toBe(5, 'Undo didn\'t reset the remaining balls');
   });
 });

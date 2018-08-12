@@ -14,8 +14,11 @@ export class StraightPoolPlayerStats {
       const ts = this.playerTurns;
       let fouls = 0;
       for (let i = ts.length - 1; i >= 0; i--) {
-        if (ts[i].ending === EndingType.Foul && ts[i].ballsMade === 0) {
+        if (ts[i].ending === EndingType.Foul) {
           fouls++;
+          if (ts[i].ballsMade > 0) {
+            break;
+          }
         } else {
           break;
         }
