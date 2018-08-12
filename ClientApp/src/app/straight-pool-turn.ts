@@ -28,5 +28,6 @@ export class StraightPoolTurn {
       this.ballsMade += 1;
       this.points += 1;
       this.includes15thBall = true;
+      this.ballsRemaining -= 1;
     }
   }

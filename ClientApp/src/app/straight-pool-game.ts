@@ -134,6 +134,9 @@ export class StraightPoolGame {
       }
 
       this.ballsRemaining = this.turns.length === 0 ? 15 : this.turns[this.turns.length - 1].ballsRemaining;
+      if (this.ballsRemaining <= 1) {
+        this.ballsRemaining = 15;
+      }
 
       return turn;
     }

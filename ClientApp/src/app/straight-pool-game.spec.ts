@@ -337,7 +337,7 @@ describe('StraightPoolGame', () => {
     expect(game.canUndo).toBeFalsy();
   });
 
-  it('undo restores balls remaining after undoing 3-foul', () => {
+  it('restores balls remaining after undoing 3-foul', () => {
     const game = new StraightPoolGame();
     const stats = game.getPlayerStats(0);
 
@@ -360,5 +360,23 @@ describe('StraightPoolGame', () => {
     game.undo();
 
     expect(game.ballsRemaining).toBe(5, 'Undo didn\'t reset the remaining balls');
+  });
+
+  it('undo restores balls remaining after two new-racks', () => {
+    const game = new StraightPoolGame();
+    game.endTurn(EndingType.NewRack);
+    game.endTurn(EndingType.NewRack);
+    game.undo();
+
+    expect(game.ballsRemaining).toBe(15);
+  });
+
+  it('undo restores balls remaining after new-rack with 15th ball', () => {
+    const game = new StraightPoolGame();
+    game.endTurn(EndingType.NewRack).include15thBall();
+    game.endTurn(EndingType.Miss);
+    game.undo();
+
+    expect(game.ballsRemaining).toBe(15);
   });
 });
