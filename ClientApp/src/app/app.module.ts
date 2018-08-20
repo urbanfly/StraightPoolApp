@@ -16,6 +16,7 @@ import { BASE_URL, StraightPoolGamesService } from './straight-pool-games.servic
 import { LocalStraightPoolGamesService } from './local-straight-pool-games.service';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material/material.module';
+import { ChartModule } from 'angular2-chartjs';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MaterialModule } from './material/material.module';
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    MaterialModule
+    MaterialModule,
+    ChartModule
   ],
   providers: [
     { provide: BASE_URL, useValue: 'http://localhost/api/games' },
