@@ -55,4 +55,13 @@ export class LocalStraightPoolGamesService implements IStraightPoolGamesService 
         .put(game, game.id)
         .then(key => game)));
   }
+
+  listGames(): Observable<StraightPoolGame[]> {
+    return from(this._db
+      .then(db => db
+        .transaction('games')
+        .objectStore('games')
+        .getAll()
+        .then(vals => vals.map(this.hydrate))));
+  }
 }

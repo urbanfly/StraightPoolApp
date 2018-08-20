@@ -41,4 +41,8 @@ export class StraightPoolGamesService implements IStraightPoolGamesService {
 
     return this.client.put(`${this.baseUrl}${game.id}`, game).pipe(map(g => Object.assign(game, this.hydrate(g))));
   }
+
+  listGames(): Observable<StraightPoolGame[]> {
+    return null;
+  }
 }

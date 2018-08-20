@@ -1,3 +1,18 @@
+<mat-card *ngFor="let g of games | async">
+  <mat-card-header>
+    <mat-card-title>
+      {{ g.players[0].name}} vs. {{ g.players[1].name }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button [routerLink]="'game/' + g.id">RESUME</button>
+    <button mat-button>DELETE</button>
+  </mat-card-actions>
+</mat-card>
+
 <button routerLink="/create" mat-fab style="position: fixed; bottom:16px;right:16px">
   <mat-icon aria-label="Start a new game">add</mat-icon>
 </button>
