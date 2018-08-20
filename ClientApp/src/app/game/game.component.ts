@@ -5,7 +5,6 @@ import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
 import { StraightPoolTurn } from '../straight-pool-turn';
-import { Observable, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -15,8 +14,7 @@ import { MatSnackBar } from '@angular/material';
 })
 export class GameComponent implements OnInit {
   game: StraightPoolGame;
-  ballsRemaining = 15;
-  obsTurns = new Subject<StraightPoolTurn[]>();
+  ballsRemaining: number;
 
   constructor(private games: StraightPoolGamesService,
     private snackBar: MatSnackBar,
@@ -26,14 +24,17 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.games.loadGame(id).subscribe(g => this.game = g);
+    this.games.loadGame(id).subscribe(g => {
+      this.game = g;
+      this.ballsRemaining = g.ballsRemaining;
+    });
   }
 
   private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining): StraightPoolTurn {
     const turn = this.game.endTurn(ending, ballsRemaining);
     this.ballsRemaining = this.game.ballsRemaining;
 
-    this.obsTurns.next(this.game.turns);
+    this.games.saveGame(this.game);
 
     return turn;
   }
@@ -46,12 +47,16 @@ export class GameComponent implements OnInit {
   newRack(ballsRemaining: number) {
     const turn = this.endTurn(EndingType.NewRack, ballsRemaining);
     const barRef = this.snackBar.open('Nice job!', 'Include 15th ball', { duration: 5000 });
-    const sub = barRef.onAction().subscribe(() => { turn.include15thBall(); });
+    const sub = barRef.onAction().subscribe(() => {
+      turn.include15thBall();
+      this.games.saveGame(this.game);
+    });
     barRef.afterDismissed().subscribe(() => sub.unsubscribe);
   }
 
   undo() {
     const turn = this.game.undo();
     this.ballsRemaining = this.game.ballsRemaining;
+    this.games.saveGame(this.game);
   }
 }
