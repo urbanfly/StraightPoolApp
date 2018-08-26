@@ -12,6 +12,7 @@ export const BASE_URL = new InjectionToken<string>('BaseUrl');
 export interface IStraightPoolGamesService {
   loadGame(id: string): Observable<StraightPoolGame>;
   saveGame(game: StraightPoolGame): Observable<StraightPoolGame>;
+  deleteGame(id: string): Observable<void>;
 }
 
 @Injectable()
@@ -43,6 +44,10 @@ export class StraightPoolGamesService implements IStraightPoolGamesService {
   }
 
   listGames(): Observable<StraightPoolGame[]> {
+    return null;
+  }
+
+  deleteGame(id: string): Observable<void> {
     return null;
   }
 }

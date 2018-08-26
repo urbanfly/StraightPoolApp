@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import * as Moment from 'moment';
-
+import { MatDialog, MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-home',
@@ -13,9 +13,15 @@ import * as Moment from 'moment';
 export class HomeComponent implements OnInit {
   games: Observable<StraightPoolGame[]>;
 
-  constructor(private gamesService: StraightPoolGamesService) { }
+  @ViewChild('deleteConfirmation') deleteConfirmation: TemplateRef<any>;
+
+  constructor(private gamesService: StraightPoolGamesService, private dialogService: MatDialog, private snackbar: MatSnackBar) { }
 
   ngOnInit() {
+    this.updateGameList();
+  }
+
+  private updateGameList() {
     this.games = this.gamesService.listGames();
   }
 
@@ -36,5 +42,22 @@ export class HomeComponent implements OnInit {
     data.labels = Array(Math.max(...data.datasets.map(ds => ds.data.length))).fill(0).map((x, i) => i);
 
     return data;
+  }
+
+  giveHint() {
+    this.snackbar.open('Long press to delete', null, {duration: 1000});
+  }
+
+  deleteGame(id: string) {
+    this.dialogService.open(this.deleteConfirmation)
+      .afterClosed()
+      .subscribe(result => {
+        if (result === 'delete') {
+          this.gamesService
+            .deleteGame(id)
+            .toPromise()
+            .then(() => this.updateGameList());
+        }
+      });
   }
 }

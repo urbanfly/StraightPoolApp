@@ -64,4 +64,12 @@ export class LocalStraightPoolGamesService implements IStraightPoolGamesService 
         .getAll()
         .then(vals => vals.map(this.hydrate))));
   }
+
+  deleteGame(id: string): Observable<void> {
+    return from(this._db
+      .then(db => db
+        .transaction('games', 'readwrite')
+        .objectStore('games')
+        .delete(id)));
+  }
 }
