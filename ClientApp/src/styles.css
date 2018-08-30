@@ -10,6 +10,7 @@ Available pre-built themes:
 
 body {
     margin: 0px;
+    user-select: none;
 }
 
 .mat-tab-label {
