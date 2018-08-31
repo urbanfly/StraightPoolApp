@@ -1,20 +1,22 @@
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
 import { StraightPoolTurn } from '../straight-pool-turn';
 import { MatSnackBar } from '@angular/material';
+import * as NoSleep from 'nosleep.js';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   game: StraightPoolGame;
   ballsRemaining: number;
+  noSleep = new NoSleep();
 
   constructor(private games: StraightPoolGamesService,
     private snackBar: MatSnackBar,
@@ -28,6 +30,12 @@ export class GameComponent implements OnInit {
       this.game = g;
       this.ballsRemaining = g.ballsRemaining;
     });
+
+    this.noSleep.enable();
+  }
+
+  ngOnDestroy() {
+    this.noSleep.disable();
   }
 
   private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining): StraightPoolTurn {
