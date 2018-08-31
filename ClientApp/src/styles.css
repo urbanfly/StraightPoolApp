@@ -11,6 +11,7 @@ Available pre-built themes:
 body {
     margin: 0px;
     user-select: none;
+    overflow-y: hidden;
 }
 
 .mat-tab-label {
