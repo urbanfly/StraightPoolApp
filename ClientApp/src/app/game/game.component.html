@@ -32,7 +32,7 @@
   </mat-grid-tile>
 </mat-grid-list>
 
-<mat-tab-group>
+<mat-tab-group mat-stretch-tabs id="game-tabs">
   <mat-tab label="Game">
     <form *ngIf="!game?.hasWinner">
       <mat-grid-list cols="5" rowHeight="1:1">
@@ -44,7 +44,7 @@
             [disabled]="game?.ballsRemaining < i">{{i}}</button>
         </mat-grid-tile>
       </mat-grid-list>
-      <div class="actionButtons" style="margin-top: 10px; width: 100%;">
+      <div class="actionButtons">
         <table style="margin-left:auto;margin-right:auto;">
           <tr>
             <td>

@@ -1,3 +1,11 @@
+<div *ngIf="!(games | async)?.length" class="empty">
+  <div>
+    <img src="assets/icons/icon-144x144.png"/>
+    <h1>No games yet</h1>
+    <div>Games that you create will show up here.</div>
+  </div>
+</div>
+
 <mat-card *ngFor="let g of games | async">
   <mat-card-header>
     <mat-card-title>

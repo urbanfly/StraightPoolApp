@@ -1,6 +1,11 @@
 :host {
+  flex: 1;
   display:flex;
   flex-direction: column;
+}
+
+#game-tabs, #game-tabs > ::ng-deep.mat-tab-body-wrapper {
+  flex: 1;
 }
 
 .activePlayer {
@@ -19,6 +24,9 @@
 
 .actionButtons {
   text-align: center;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
 }
 
 .actionButtons button {
