@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
 import { MatSnackBar } from '@angular/material';
 
@@ -10,7 +11,7 @@ import { MatSnackBar } from '@angular/material';
 export class AppComponent {
   title = 'Straight Pool';
 
-  constructor(private updates: SwUpdate, private snackBar: MatSnackBar) {
+  constructor(private updates: SwUpdate, private snackBar: MatSnackBar, private location: Location) {
     updates.available.subscribe(event => {
       console.log('current version is', event.current);
       console.log('available version is', event.available);
@@ -23,5 +24,13 @@ export class AppComponent {
       console.log('old version was', event.previous);
       console.log('new version is', event.current);
     });
+  }
+
+  get canGoBack(): boolean {
+    return !this.location.isCurrentPathEqualTo('/');
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

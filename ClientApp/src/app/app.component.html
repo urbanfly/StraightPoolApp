@@ -1,4 +1,9 @@
-<mat-toolbar color="primary">{{ title }}</mat-toolbar>
+<mat-toolbar color="primary">
+  <button mat-icon-button type="button" style="margin-left:-16px;" *ngIf="canGoBack" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  {{ title }}
+</mat-toolbar>
 <div id="app-content">
     <router-outlet></router-outlet>
 </div>
