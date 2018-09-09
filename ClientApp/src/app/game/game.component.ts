@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
@@ -11,7 +11,8 @@ import * as NoSleep from 'nosleep.js';
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  styleUrls: ['./game.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   game: StraightPoolGame;
@@ -110,6 +111,25 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   win(ballsRemaining: number) {
-    this.endTurn(EndingType.Miss, ballsRemaining);
+    this.endTurn(EndingType.Win, ballsRemaining);
+  }
+
+  get gameChartData(): any {
+    console.log('getting chart data');
+    const data = {
+      labels: null,
+      datasets: this.game.players.map(p => ({
+        label: p.name,
+        data: this.game.getPlayerStatsByPlayer(p).playerTurns.map(t => t.totalPoints).reduce(function(r, a) {
+          r.push((r.length && r[r.length - 1] || 0) + a);
+          return r;
+        }, []),
+        fill: false,
+        borderColor: this.game.players[0] === p ? 'red' : 'blue'
+      }))
+    };
+    data.labels = Array(Math.max(...data.datasets.map(ds => ds.data.length))).fill(0).map((x, i) => i);
+
+    return data;
   }
 }

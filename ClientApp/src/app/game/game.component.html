@@ -34,8 +34,13 @@
 
 <mat-tab-group mat-stretch-tabs #gameTabs id="game-tabs" (selectedIndexChange)="gameTabChanged($event)">
   <mat-tab label="Game">
-    <div *ngIf="game?.hasWinner; else scoring">
-      {{ game.winner.name || 'Anonymous' }} has won!
+    <div *ngIf="game?.hasWinner; else scoring" class="winning">
+      <div>
+        <img src="assets/icons/icon-144x144.png"/>
+        <h1>{{ game.winner.name || 'Player ' + (game.currentPlayerIndex + 1) }} is the winner!</h1>
+        Stats and details are available above
+        <chart type="line" [data]="gameChartData"></chart>
+      </div>
       <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
         <button mat-icon-button
           type="button" color="primary"
@@ -48,13 +53,20 @@
     <ng-template #scoring>
       <mat-grid-list cols="5" rowHeight="1:1">
         <mat-grid-tile>
-          <button type="button" mat-mini-fab (click)="newRack(1)" [disabled]="ballsToWin < game?.ballsRemaining"><mat-icon>autorenew</mat-icon></button>
-        </mat-grid-tile>
-        <mat-grid-tile *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
-          <button type="button" *ngIf="i === (game?.ballsRemaining - ballsToWin);else winning" mat-mini-fab name="balls{{i}}" (click)="win(i)" color="accent">
+          <button type="button" *ngIf="(game?.ballsRemaining - ballsToWin) === 1; else renew" mat-mini-fab (click)="win(1)" color="accent">
             <mat-icon>done_outline</mat-icon>
           </button>
-          <ng-template #winning>
+          <ng-template #renew>
+            <button type="button" mat-mini-fab (click)="newRack(1)" [disabled]="(game?.ballsRemaining - ballsToWin) > 1">
+              <mat-icon>autorenew</mat-icon>
+            </button>
+          </ng-template>
+        </mat-grid-tile>
+        <mat-grid-tile *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
+          <button type="button" *ngIf="(game?.ballsRemaining - ballsToWin) === i; else notWinning" mat-mini-fab name="balls{{i}}" (click)="win(i)" color="accent">
+            <mat-icon>done_outline</mat-icon>
+          </button>
+          <ng-template #notWinning>
             <button type="button" mat-mini-fab name="balls{{i}}" (click)="setBallsRemaining(i)" [color]="ballsRemaining == i ? 'primary' : 'accent'"
               [disabled]="game?.ballsRemaining < i || (i < game?.ballsRemaining - ballsToWin)">{{i}}</button>
           </ng-template>
@@ -100,7 +112,7 @@
   <mat-tab label="Details">
     <div class="turnList">
       <div *ngFor="let turn of game?.turns" class="turn" [ngClass]="['player'+turn.playerIndex, turn.ending]">
-        {{ turn.ending }}
+        <span class="ending">{{ turn.ending }}</span>
         <span class="points">{{ turn.totalPoints }}</span>
       </div>
     </div>
