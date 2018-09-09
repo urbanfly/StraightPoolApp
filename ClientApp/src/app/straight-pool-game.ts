@@ -71,8 +71,8 @@ export class StraightPoolGame {
       }
       if (ending === EndingType.NewRack && ballsRemaining > 1) {
         throw new Error('NewRack can only be used when there are zero or one balls left.');
-      } else if (ending !== EndingType.NewRack && ballsRemaining <= 1) {
-        throw new Error('NewRack is required when 0 or 1 balls are remaining.');
+      } else if (ballsRemaining <= 1 && ending !== EndingType.NewRack && ending !== EndingType.Win) {
+        throw new Error('NewRack or Win is required when 0 or 1 balls are remaining.');
       } else if (ending === EndingType.ForceRerack && ballsRemaining !== this.ballsRemaining) {
         throw new Error('ForceRerack cannot be used if balls were made.');
       } else if (ending === EndingType.BreakingFoul && ballsRemaining !== 15) {
@@ -116,6 +116,8 @@ export class StraightPoolGame {
         case EndingType.ThreeConsecutiveFouls:
           this.ballsRemaining = 15;
           break; // the turn doesn't swich for 3-consecutive fouls
+        case EndingType.Win:
+          break; // nothing to do
       }
 
       return thisTurn;

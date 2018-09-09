@@ -7,4 +7,5 @@ export enum EndingType {
     BreakingFoul = 'BreakingFoul',
     ThreeConsecutiveFouls = 'ThreeConsecutiveFouls',
     ForceRerack = 'ForceRerack',
+    Win = 'Win'
 }
