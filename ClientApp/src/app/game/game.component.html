@@ -36,10 +36,9 @@
   <mat-tab label="Game">
     <div *ngIf="game?.hasWinner; else scoring" class="winning">
       <div>
-        <img src="assets/icons/icon-144x144.png"/>
         <h1>{{ game.winner.name || 'Player ' + (game.currentPlayerIndex + 1) }} is the winner!</h1>
         Stats and details are available above
-        <chart type="line" [data]="gameChartData"></chart>
+        <chart type="line" [data]="gameChartData" [options]="chartOptions"></chart>
       </div>
       <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
         <button mat-icon-button
