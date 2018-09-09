@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { Observable, from } from 'rxjs';
@@ -8,7 +8,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
   games: Observable<StraightPoolGame[]>;
@@ -34,7 +35,10 @@ export class HomeComponent implements OnInit {
       labels: null,
       datasets: game.players.map(p => ({
         label: p.name,
-        data: game.getPlayerStatsByPlayer(p).playerTurns.map(t => t.totalPoints),
+        data: game.getPlayerStatsByPlayer(p).playerTurns.map(t => t.totalPoints).reduce(function(r, a) {
+          r.push((r.length && r[r.length - 1] || 0) + a);
+          return r;
+        }, []),
         fill: false,
         borderColor: game.players[0] === p ? 'red' : 'blue'
       }))
