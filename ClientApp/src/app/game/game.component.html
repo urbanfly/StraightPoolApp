@@ -34,14 +34,30 @@
 
 <mat-tab-group mat-stretch-tabs id="game-tabs">
   <mat-tab label="Game">
-    <form *ngIf="!game?.hasWinner">
+    <div *ngIf="game?.hasWinner; else scoring">
+      {{ game.winner.name || 'Anonymous' }} has won!
+      <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
+        <button mat-icon-button
+          type="button" color="primary"
+          *ngIf="game?.canUndo"
+          (click)="undo()">
+          <mat-icon>undo</mat-icon>
+        </button>
+      </div>
+    </div>
+    <ng-template #scoring>
       <mat-grid-list cols="5" rowHeight="1:1">
         <mat-grid-tile>
-          <button type="button" mat-mini-fab (click)="newRack(1)"><mat-icon>autorenew</mat-icon></button>
+          <button type="button" mat-mini-fab (click)="newRack(1)" [disabled]="ballsToWin < game?.ballsRemaining"><mat-icon>autorenew</mat-icon></button>
         </mat-grid-tile>
         <mat-grid-tile *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
-          <button type="button" mat-mini-fab name="balls{{i}}" (click)="ballsRemaining = i" [color]="ballsRemaining == i ? 'primary' : 'accent'"
-            [disabled]="game?.ballsRemaining < i">{{i}}</button>
+          <button type="button" *ngIf="i === (game?.ballsRemaining - ballsToWin);else winning" mat-mini-fab name="balls{{i}}" (click)="win(i)" color="accent">
+            <mat-icon>done_outline</mat-icon>
+          </button>
+          <ng-template #winning>
+            <button type="button" mat-mini-fab name="balls{{i}}" (click)="ballsRemaining = i" [color]="ballsRemaining == i ? 'primary' : 'accent'"
+              [disabled]="game?.ballsRemaining < i || (i < game?.ballsRemaining - ballsToWin)">{{i}}</button>
+          </ng-template>
         </mat-grid-tile>
       </mat-grid-list>
       <div class="actionButtons">
@@ -76,7 +92,7 @@
           </tr>
         </table>
       </div>
-    </form>
+    </ng-template>
   </mat-tab>
   <mat-tab label="Stats">
     <app-players [game]="game"></app-players>

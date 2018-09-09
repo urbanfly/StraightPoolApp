@@ -17,18 +17,18 @@ export class GameComponent implements OnInit, OnDestroy {
   game: StraightPoolGame;
   ballsRemaining: number;
   noSleep = new NoSleep();
+  ballsToWin: number;
 
   constructor(private games: StraightPoolGamesService,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute,
-    private location: Location) {
+    private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     this.games.loadGame(id).subscribe(g => {
       this.game = g;
-      this.ballsRemaining = g.ballsRemaining;
+      this.update();
     });
 
     this.noSleep.enable();
@@ -38,33 +38,55 @@ export class GameComponent implements OnInit, OnDestroy {
     this.noSleep.disable();
   }
 
-  private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining): StraightPoolTurn {
-    const turn = this.game.endTurn(ending, ballsRemaining);
-    this.ballsRemaining = this.game.ballsRemaining;
-
-    this.games.saveGame(this.game);
-
-    return turn;
-  }
-
   miss() { this.endTurn(EndingType.Miss); }
   foul() { this.endTurn(EndingType.Foul); }
   breakingFoul() { this.endTurn(EndingType.BreakingFoul); }
   safety() { this.endTurn(EndingType.Safety); }
+
+  private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining): StraightPoolTurn {
+    // In case the sleep was cancelled, re-enable sleeping
+    // - screen manually turned off
+    // - switching apps
+    this.noSleep.enable();
+
+    const turn = this.game.endTurn(ending, ballsRemaining);
+
+    this.saveAndUpdate();
+
+    return turn;
+  }
 
   newRack(ballsRemaining: number) {
     const turn = this.endTurn(EndingType.NewRack, ballsRemaining);
     const barRef = this.snackBar.open('Nice job!', 'Include 15th ball', { duration: 5000 });
     const sub = barRef.onAction().subscribe(() => {
       turn.include15thBall();
-      this.games.saveGame(this.game);
+      this.saveAndUpdate();
     });
     barRef.afterDismissed().subscribe(() => sub.unsubscribe);
   }
 
   undo() {
     const turn = this.game.undo();
-    this.ballsRemaining = this.game.ballsRemaining;
+    this.saveAndUpdate();
+  }
+
+  private calcBallsToWin(): number {
+    const stats = this.game.getPlayerStats(this.game.currentPlayerIndex);
+    return this.game.pointLimit - stats.score;
+  }
+
+  private saveAndUpdate() {
+    this.update();
     this.games.saveGame(this.game);
+  }
+
+  private update() {
+    this.ballsRemaining = this.game.ballsRemaining;
+    this.ballsToWin = this.calcBallsToWin();
+  }
+
+  win(ballsRemaining: number) {
+    this.endTurn(EndingType.Miss, ballsRemaining);
   }
 }
