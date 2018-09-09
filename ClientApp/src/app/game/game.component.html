@@ -32,7 +32,7 @@
   </mat-grid-tile>
 </mat-grid-list>
 
-<mat-tab-group mat-stretch-tabs id="game-tabs">
+<mat-tab-group mat-stretch-tabs #gameTabs id="game-tabs" (selectedIndexChange)="gameTabChanged($event)">
   <mat-tab label="Game">
     <div *ngIf="game?.hasWinner; else scoring">
       {{ game.winner.name || 'Anonymous' }} has won!

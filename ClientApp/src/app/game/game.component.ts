@@ -1,11 +1,11 @@
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
 import { StraightPoolTurn } from '../straight-pool-turn';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatTabGroup } from '@angular/material';
 import * as NoSleep from 'nosleep.js';
 
 @Component({
@@ -13,15 +13,17 @@ import * as NoSleep from 'nosleep.js';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit, OnDestroy {
+export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   game: StraightPoolGame;
   ballsRemaining: number;
   noSleep = new NoSleep();
   ballsToWin: number;
+  @ViewChild('gameTabs') gameTabs: MatTabGroup;
 
   constructor(private games: StraightPoolGamesService,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private location: Location) {
   }
 
   ngOnInit() {
@@ -34,8 +36,16 @@ export class GameComponent implements OnInit, OnDestroy {
     this.noSleep.enable();
   }
 
+  ngAfterViewInit() {
+    this.route.queryParamMap.subscribe(p => this.gameTabs.selectedIndex = +p.get('index') || 0);
+  }
+
   ngOnDestroy() {
     this.noSleep.disable();
+  }
+
+  gameTabChanged(index: number) {
+    this.location.replaceState(location.pathname, `index=${index}`);
   }
 
   miss() { this.endTurn(EndingType.Miss); }
