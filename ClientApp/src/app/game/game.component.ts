@@ -126,7 +126,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
         }, []),
         fill: false,
         borderColor: this.game.players[0] === p ? 'red' : 'blue',
-        cubicInterpolationMode: 'monotonic',
+        cubicInterpolationMode: 'monotone',
         pointRadius: 0
       }))
     };

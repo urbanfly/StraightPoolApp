@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
         }, []),
         fill: false,
         borderColor: game.players[0] === p ? 'red' : 'blue',
-        cubicInterpolationMode: 'monotonic',
+        cubicInterpolationMode: 'monotone',
         pointRadius: 0
       }))
     };
