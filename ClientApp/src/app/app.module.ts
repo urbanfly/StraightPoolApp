@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
-import { StraightPoolRulesService } from './straight-pool-rules.service';
 import { PlayersComponent } from './players/players.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -28,9 +27,9 @@ import { ChartModule } from 'angular2-chartjs';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
-    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     MaterialModule,
