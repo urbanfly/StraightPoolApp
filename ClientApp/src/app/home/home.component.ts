@@ -40,7 +40,9 @@ export class HomeComponent implements OnInit {
           return r;
         }, []),
         fill: false,
-        borderColor: game.players[0] === p ? 'red' : 'blue'
+        borderColor: game.players[0] === p ? 'red' : 'blue',
+        cubicInterpolationMode: 'monotonic',
+        pointRadius: 0
       }))
     };
     data.labels = Array(Math.max(...data.datasets.map(ds => ds.data.length))).fill(0).map((x, i) => i);

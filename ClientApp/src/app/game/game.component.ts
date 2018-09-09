@@ -125,7 +125,9 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
           return r;
         }, []),
         fill: false,
-        borderColor: this.game.players[0] === p ? 'red' : 'blue'
+        borderColor: this.game.players[0] === p ? 'red' : 'blue',
+        cubicInterpolationMode: 'monotonic',
+        pointRadius: 0
       }))
     };
     data.labels = Array(Math.max(...data.datasets.map(ds => ds.data.length))).fill(0).map((x, i) => i);
