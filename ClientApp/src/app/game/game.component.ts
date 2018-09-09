@@ -5,7 +5,7 @@ import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
 import { StraightPoolTurn } from '../straight-pool-turn';
-import { MatSnackBar, MatTabGroup } from '@angular/material';
+import { MatSnackBar, MatTabGroup, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import * as NoSleep from 'nosleep.js';
 
 @Component({
@@ -19,6 +19,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   noSleep = new NoSleep();
   ballsToWin: number;
   @ViewChild('gameTabs') gameTabs: MatTabGroup;
+  private newRackSnackBarRef: MatSnackBarRef<SimpleSnackBar>;
 
   constructor(private games: StraightPoolGamesService,
     private snackBar: MatSnackBar,
@@ -68,17 +69,21 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   newRack(ballsRemaining: number) {
     const turn = this.endTurn(EndingType.NewRack, ballsRemaining);
-    const barRef = this.snackBar.open('Nice job!', 'Include 15th ball', { duration: 5000 });
-    const sub = barRef.onAction().subscribe(() => {
+    this.newRackSnackBarRef = this.snackBar.open('Nice job!', 'Include 15th ball', { duration: 5000 });
+    this.newRackSnackBarRef.onAction().subscribe(() => {
       turn.include15thBall();
       this.saveAndUpdate();
     });
-    barRef.afterDismissed().subscribe(() => sub.unsubscribe);
   }
 
   undo() {
     const turn = this.game.undo();
     this.saveAndUpdate();
+  }
+
+  setBallsRemaining(ballsRemaining: number) {
+    this.hideSnackBar();
+    this.ballsRemaining = ballsRemaining;
   }
 
   private calcBallsToWin(): number {
@@ -87,6 +92,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private saveAndUpdate() {
+    this.hideSnackBar();
     this.update();
     this.games.saveGame(this.game);
   }
@@ -94,6 +100,13 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   private update() {
     this.ballsRemaining = this.game.ballsRemaining;
     this.ballsToWin = this.calcBallsToWin();
+  }
+
+  private hideSnackBar() {
+    if (this.newRackSnackBarRef) {
+      this.newRackSnackBarRef.dismiss();
+      this.newRackSnackBarRef = null;
+    }
   }
 
   win(ballsRemaining: number) {

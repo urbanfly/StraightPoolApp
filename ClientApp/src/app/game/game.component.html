@@ -55,7 +55,7 @@
             <mat-icon>done_outline</mat-icon>
           </button>
           <ng-template #winning>
-            <button type="button" mat-mini-fab name="balls{{i}}" (click)="ballsRemaining = i" [color]="ballsRemaining == i ? 'primary' : 'accent'"
+            <button type="button" mat-mini-fab name="balls{{i}}" (click)="setBallsRemaining(i)" [color]="ballsRemaining == i ? 'primary' : 'accent'"
               [disabled]="game?.ballsRemaining < i || (i < game?.ballsRemaining - ballsToWin)">{{i}}</button>
           </ng-template>
         </mat-grid-tile>
