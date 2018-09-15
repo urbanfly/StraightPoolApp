@@ -2,6 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
 import { MaterialModule } from '../material/material.module';
+import { ChartModule } from 'angular2-chartjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { StraightPoolGamesService } from '../straight-pool-games.service';
+import { LocalStraightPoolGamesService } from '../local-straight-pool-games.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -12,6 +16,13 @@ describe('HomeComponent', () => {
       declarations: [ HomeComponent ],
       imports: [
         MaterialModule,
+        ChartModule,
+        RouterTestingModule.withRoutes(
+          [{path: '', component: HomeComponent}]
+        )
+      ],
+      providers: [
+        { provide: StraightPoolGamesService, useClass: LocalStraightPoolGamesService }
       ]
     })
     .compileComponents();

@@ -7,7 +7,11 @@ import { EndingType } from '../straight-pool-ending-type.enum';
 import { MaterialModule } from '../material/material.module';
 import { StraightPoolGamesService, BASE_URL } from '../straight-pool-games.service';
 import { LocalStraightPoolGamesService } from '../local-straight-pool-games.service';
-import { RouterModule } from '../../../node_modules/@angular/router';
+import { ChartModule } from 'angular2-chartjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { StraightPoolGame } from '../straight-pool-game';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -21,12 +25,27 @@ describe('GameComponent', () => {
       imports: [
         FormsModule,
         MaterialModule,
-        RouterModule.forRoot([]),
+        RouterTestingModule.withRoutes([]),
+        ChartModule,
+        NoopAnimationsModule
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: 'http://localhost/api/games' },
         { provide: BASE_URL, useValue: 'http://localhost/api/games' },
-        { provide: StraightPoolGamesService, useClass: LocalStraightPoolGamesService }
+        { provide: StraightPoolGamesService, useClass: LocalStraightPoolGamesService },
+        { provide: ActivatedRouteSnapshot, useValue: {
+            paramMap: {
+              get: function(key: string) {
+                return 123; // game ID
+              }
+            },
+            queryParamMap: {
+              get: function(key: string) {
+                return 1; // tab index
+              }
+            }
+          }
+        }
       ],
     })
     .compileComponents();
@@ -35,6 +54,8 @@ describe('GameComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GameComponent);
     component = fixture.componentInstance;
+    // override the normal loading behavior with a static game instance
+    component.game = new StraightPoolGame();
     fixture.detectChanges();
   });
 

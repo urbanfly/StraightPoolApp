@@ -6,7 +6,8 @@ import { MaterialModule } from '../material/material.module';
 import { FormsModule } from '@angular/forms';
 import { BASE_URL, StraightPoolGamesService } from '../straight-pool-games.service';
 import { LocalStraightPoolGamesService } from '../local-straight-pool-games.service';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CreateComponent', () => {
   let component: CreateComponent;
@@ -18,7 +19,8 @@ describe('CreateComponent', () => {
       imports: [
         FormsModule,
         MaterialModule,
-        RouterModule.forRoot([])
+        RouterTestingModule.withRoutes([]),
+        NoopAnimationsModule
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: 'http://localhost/api/games' },

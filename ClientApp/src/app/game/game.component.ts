@@ -1,4 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
@@ -40,13 +40,14 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private games: StraightPoolGamesService,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute,
+    private route: ActivatedRouteSnapshot,
     private location: Location) {
   }
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.paramMap.get('id');
     this.games.loadGame(id).subscribe(g => {
+      console.log('loaded game', g);
       this.game = g;
       this.update();
     });
@@ -55,7 +56,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.route.queryParamMap.subscribe(p => this.gameTabs.selectedIndex = +p.get('index') || 0);
+    this.gameTabs.selectedIndex = +this.route.queryParamMap.get('index') || 0;
   }
 
   ngOnDestroy() {
