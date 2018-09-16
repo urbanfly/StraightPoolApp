@@ -4,7 +4,7 @@
   </mat-label>
   <ng-template #handicap>
       <mat-label style="flex:1;">
-        Race to {{ game?.pointLimit - game.players[0].handicapPoints }} : {{ game?.pointLimit - game.players[1].handicapPoints }}
+        Race to {{ game?.pointLimit - game?.players[0]?.handicapPoints }} : {{ game?.pointLimit - game?.players[1]?.handicapPoints }}
       </mat-label>
   </ng-template>
   <mat-slide-toggle [checked]="includeHandicap" (change)="toggleHandicap()" color="primary">
@@ -12,15 +12,14 @@
   </mat-slide-toggle>
 </mat-toolbar>
 
-<mat-grid-list cols="9" rowHeight="8:11" role="list">
+<mat-grid-list cols="9" rowHeight="7:11" role="list">
   <mat-grid-tile *ngIf="game?.players[0] as p" colspan="4" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
     <div style="text-align: center; width:100%;" *ngIf="game.getPlayerStatsByPlayer(p) as stats">
       <div style="position:absolute; right:5px; top:0px; float:right; display: flex; flex-direction: column; font-size:small; justify-content: space-evenly; height:100%;">
         <div>{{stats.highRun | number:'1.0-0'}}</div>
         <div>{{stats.avgBallsPerTurn | number:'1.0-2'}}</div>
-        <div>{{stats.standardDeviation | number:'1.0-2'}}</div>
       </div>
-      <div style="text-align: center; font-size: small;">{{ p.name }}</div>
+      <div style="text-align: center; font-size: small; margin-bottom: 5px;">{{ p.name }}</div>
       <div style="font-size: 20pt">{{ includeHandicap ? stats.scoreWithHandicap : stats.score }}</div>
     </div>
   </mat-grid-tile>
@@ -28,7 +27,6 @@
     <div style="text-align: center; display: flex; flex-direction: column; font-size:small; justify-content: space-evenly; height:100%;">
       <div>Max</div>
       <div>Avg</div>
-      <div>StDv</div>
     </div>
   </mat-grid-tile>
   <mat-grid-tile *ngIf="game?.players[1] as p" colspan="4" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
@@ -36,9 +34,8 @@
       <div style="position:absolute; left:5px; top:0px; float:left; display: flex; flex-direction: column; font-size:small; justify-content: space-evenly; height:100%;">
         <div>{{stats.highRun | number:'1.0-0'}}</div>
         <div>{{stats.avgBallsPerTurn | number:'1.0-2'}}</div>
-        <div>{{stats.standardDeviation | number:'1.0-2'}}</div>
       </div>
-      <div style="text-align: center; font-size: small;">{{ p.name }}</div>
+      <div style="text-align: center; font-size: small; margin-bottom: 5px;">{{ p.name }}</div>
       <div style="font-size: 20pt">{{ includeHandicap ? stats.scoreWithHandicap : stats.score }}</div>
     </div>
   </mat-grid-tile>
@@ -47,13 +44,14 @@
 <mat-tab-group mat-stretch-tabs #gameTabs id="game-tabs" (selectedIndexChange)="gameTabChanged($event)">
   <mat-tab label="Game">
     <div *ngIf="game?.hasWinner; else scoring" class="winning">
-      <div>
+      <div style="width:100%; padding-bottom: 60px;">
         <h1>{{ game.winner.name || 'Player ' + (game.currentPlayerIndex + 1) }} is the winner!</h1>
         Stats and details are available above
-        <chart type="line" [data]="gameChartData" [options]="chartOptions"></chart>
+        <chart type="line" [data]="gameChartData" [options]="chartOptions" style="width:100%;"></chart>
+        <chart type="line" [data]="gameNormDistChartData" [options]="normDistOptions" style="width:100%;"></chart>
       </div>
       <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
-        <button mat-icon-button
+        <button mat-mini-fab
           type="button" color="primary"
           *ngIf="game?.canUndo"
           (click)="undo()">

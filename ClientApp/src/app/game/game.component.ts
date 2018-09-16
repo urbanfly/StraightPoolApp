@@ -19,7 +19,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   ballsRemaining: number;
   noSleep = new NoSleep();
   ballsToWin: number;
-  includeHandicap: boolean;
+  includeHandicap = true;
 
   @ViewChild('gameTabs') gameTabs: MatTabGroup;
   private newRackSnackBarRef: MatSnackBarRef<SimpleSnackBar>;
@@ -28,16 +28,57 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
       yAxes: [{
         id: 'A',
         type: 'linear',
-        position: 'left'
+        position: 'left',
+        scaleLabel: {
+          display: true,
+          labelString: 'avg'
+        }
       }, {
         id: 'B',
         type: 'linear',
-        position: 'right'
-      }]
+        position: 'right',
+        scaleLabel: {
+          display: true,
+          labelString: 'score'
+        }
+      }],
+      xAxes: [
+        {
+          scaleLabel: {
+            display: true,
+            labelString: 'innings'
+          }
+        }
+      ]
     },
     legend: {
-      display: false
+      display: true
+    }
+  };
+
+  normDistOptions = {
+    scales: {
+      yAxes: [{
+        gridLines: {
+          display: false,
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'probability'
+        }
+      }],
+      xAxes: [
+        {
+          scaleLabel: {
+            display: true,
+            labelString: 'balls/inning'
+          }
+        }
+      ]
     },
+    legend: {
+      display: true
+    }
   };
 
   constructor(private games: StraightPoolGamesService,
@@ -172,5 +213,31 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
     data.labels = Array(Math.max(...data.datasets.map(ds => ds.data.length))).fill(0).map((x, i) => i);
 
     return data;
+  }
+
+  get gameNormDistChartData(): any {
+    const data = {
+      labels: new Array(20).fill(0).map((v, i) => i),
+      datasets: this.game.players.map(p => {
+        const stats = this.game.getPlayerStatsByPlayer(p);
+        const mean = stats.avgBallsPerTurn;
+        const stdv = stats.standardDeviation;
+        return {
+          label: `${p.name} Normal Dist.`,
+          data: new Array(20).fill(0).map((v, i) => pdf(i, mean, stdv)),
+          fill: true,
+          borderColor: this.game.players[0] === p ? 'red' : 'blue',
+          backgroundColor: this.game.players[0] === p ? 'rgba(255, 0, 0, 0.1)' : 'rgba(0, 0, 255, 0.1)',
+          pointRadius: 0
+        };
+      })
+    };
+
+    return data;
+
+    function pdf(x, mean, std) {
+      return Math.exp(-0.5 * Math.log(2 * Math.PI) -
+             Math.log(std) - Math.pow(x - mean, 2) / (2 * std * std));
+    }
   }
 }
