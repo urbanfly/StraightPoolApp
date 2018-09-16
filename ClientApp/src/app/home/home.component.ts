@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
 import { Observable, from } from 'rxjs';
@@ -32,7 +32,10 @@ export class HomeComponent implements OnInit {
 
   @ViewChild('deleteConfirmation') deleteConfirmation: TemplateRef<any>;
 
-  constructor(private gamesService: StraightPoolGamesService, private dialogService: MatDialog, private snackbar: MatSnackBar) { }
+  constructor(private gamesService: StraightPoolGamesService,
+              private dialogService: MatDialog,
+              private snackbar: MatSnackBar,
+              private changeDetector: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.updateGameList();
@@ -40,6 +43,7 @@ export class HomeComponent implements OnInit {
 
   private updateGameList() {
     this.games = this.gamesService.listGames();
+    this.changeDetector.detectChanges();
   }
 
   getGameMoment(game: StraightPoolGame): Moment.Moment {
