@@ -10,7 +10,7 @@ import { LocalStraightPoolGamesService } from '../local-straight-pool-games.serv
 import { ChartModule } from 'angular2-chartjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { StraightPoolGame } from '../straight-pool-game';
 
 describe('GameComponent', () => {
@@ -33,7 +33,8 @@ describe('GameComponent', () => {
         { provide: APP_BASE_HREF, useValue: 'http://localhost/api/games' },
         { provide: BASE_URL, useValue: 'http://localhost/api/games' },
         { provide: StraightPoolGamesService, useClass: LocalStraightPoolGamesService },
-        { provide: ActivatedRouteSnapshot, useValue: {
+        { provide: ActivatedRoute, useValue: {
+          snapshot: {
             paramMap: {
               get: function(key: string) {
                 return 123; // game ID
@@ -44,7 +45,7 @@ describe('GameComponent', () => {
                 return 1; // tab index
               }
             }
-          }
+          }}
         }
       ],
     })

@@ -24,8 +24,8 @@ export class CreateComponent implements OnInit {
 
   createGame() {
     const game = new StraightPoolGame(this.params.raceTo, [
-      new StraightPoolPlayer(this.params.player0Name),
-      new StraightPoolPlayer(this.params.player1Name)
+      new StraightPoolPlayer(this.params.player0Name || 'Player 1', null, this.params.player0Handicap),
+      new StraightPoolPlayer(this.params.player1Name || 'Player 2', null, this.params.player1Handicap)
     ]);
     this.games.saveGame(game).subscribe(g => {
       this.router.navigate(['game', g.id], {replaceUrl: true});

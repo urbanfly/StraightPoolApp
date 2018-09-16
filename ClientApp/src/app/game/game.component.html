@@ -1,4 +1,16 @@
-<mat-toolbar color="accent">Race to {{ game?.pointLimit }}</mat-toolbar>
+<mat-toolbar color="accent">
+  <mat-label style="flex:1;" *ngIf="includeHandicap; else handicap">
+    Race to {{ game?.pointLimit }}
+  </mat-label>
+  <ng-template #handicap>
+      <mat-label style="flex:1;">
+        Race to {{ game?.pointLimit - game.players[0].handicapPoints }} : {{ game?.pointLimit - game.players[1].handicapPoints }}
+      </mat-label>
+  </ng-template>
+  <mat-slide-toggle [checked]="includeHandicap" (change)="toggleHandicap()" color="primary">
+    Include handicap
+  </mat-slide-toggle>
+</mat-toolbar>
 
 <mat-grid-list cols="9" rowHeight="8:11" role="list">
   <mat-grid-tile *ngIf="game?.players[0] as p" colspan="4" role="listitem" [ngClass]="{ activePlayer: game.currentPlayer === p, onTwoFouls: game.getPlayerStatsByPlayer(p).consecutiveFouls == 2 }">
@@ -9,7 +21,7 @@
         <div>{{stats.standardDeviation | number:'1.0-2'}}</div>
       </div>
       <div style="text-align: center; font-size: small;">{{ p.name }}</div>
-      <div style="font-size: 20pt">{{ stats.score }}</div>
+      <div style="font-size: 20pt">{{ includeHandicap ? stats.scoreWithHandicap : stats.score }}</div>
     </div>
   </mat-grid-tile>
   <mat-grid-tile>
@@ -27,7 +39,7 @@
         <div>{{stats.standardDeviation | number:'1.0-2'}}</div>
       </div>
       <div style="text-align: center; font-size: small;">{{ p.name }}</div>
-      <div style="font-size: 20pt">{{ stats.score }}</div>
+      <div style="font-size: 20pt">{{ includeHandicap ? stats.scoreWithHandicap : stats.score }}</div>
     </div>
   </mat-grid-tile>
 </mat-grid-list>

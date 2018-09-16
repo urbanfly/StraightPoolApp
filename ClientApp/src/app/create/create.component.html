@@ -1,26 +1,37 @@
-<mat-label>
-  What is the game limit?
-</mat-label>
-<mat-slider thumbLabel [(ngModel)]="params.raceTo" max="200" min="0" step="5" tickInterval="10">
-</mat-slider>
+<mat-toolbar style="position: absolute; z-index: 100;">
+  Race to {{params.raceTo}}
+  <mat-slider style="flex: 1;" thumbLabel [(ngModel)]="params.raceTo" max="200" min="0" step="5" tickInterval="10">
+  </mat-slider>
+</mat-toolbar>
 
-<div style="display: flex; flex-direction: row;">
-  <div>
-    <mat-form-field>
-      <input matInput [(ngModel)]="params.player0Name" type="text" placeholder="Player 1 name" />
-    </mat-form-field>
+<div style="display: flex; flex-direction: row; margin-top:56px;">
+  <mat-form-field style="text-align: center; font-size: x-large;">
+    <input matInput [(ngModel)]="params.player0Name" type="text" placeholder="Player 1" />
+  </mat-form-field>
 
-    <!-- <mat-slider thumbLabel [(ngModel)]="params.player0Handicap" [max]="params.raceTo" min="0" step="1" tickInterval="10">
-    </mat-slider> -->
+  <mat-form-field style="text-align: center; font-size: x-large;">
+    <input matInput [(ngModel)]="params.player1Name" type="text" placeholder="Player 2" />
+  </mat-form-field>
+</div>
+
+<div style="display: flex; flex-direction: row; justify-content: space-around;">
+    <h2 style="flex-grow:2; text-align: center;">{{params.raceTo - params.player0Handicap}}</h2>
+    <h2 style="flex-shrink: 1;">vs</h2>
+    <h2 style="flex-grow:2; text-align: center;">{{params.raceTo - params.player1Handicap}}</h2>
+</div>
+
+<div style="text-align: center;">Handicap Points</div>
+
+<div style="display: flex; flex-direction: row; justify-content: space-around; flex:1; margin-bottom: 80px;">
+  <div style="text-align: center; display:flex; flex-direction: column;">
+    <h3>{{params.player0Handicap}}</h3>
+    <mat-slider style="flex:1;" thumbLabel vertical [(ngModel)]="params.player0Handicap" [max]="params.raceTo" min="0" step="5" tickInterval="5">
+    </mat-slider>
   </div>
-
-  <div>
-    <mat-form-field>
-      <input matInput [(ngModel)]="params.player1Name" type="text" placeholder="Player 2 name" />
-    </mat-form-field>
-
-    <!-- <mat-slider thumbLabel [(ngModel)]="params.player1Handicap" [max]="params.raceTo" min="0" step="1" tickInterval="10">
-    </mat-slider> -->
+  <div style="text-align: center; display:flex; flex-direction: column;">
+    <h3>{{params.player1Handicap}}</h3>
+    <mat-slider style="flex:1" thumbLabel vertical [(ngModel)]="params.player1Handicap" [max]="params.raceTo" min="0" step="5" tickInterval="5">
+    </mat-slider>
   </div>
 </div>
 

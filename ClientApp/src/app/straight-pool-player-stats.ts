@@ -4,9 +4,17 @@ import { StraightPoolPlayer } from './straight-pool-player';
 
 export class StraightPoolPlayerStats {
 
-    static errorEndings = [EndingType.BreakingFoul, EndingType.Foul, EndingType.ThreeConsecutiveFouls, EndingType.Miss];
+    static errorEndings = [
+      EndingType.BreakingFoul,
+      EndingType.Foul,
+      EndingType.ThreeConsecutiveFouls,
+      EndingType.Miss
+    ];
 
-    constructor(public player: StraightPoolPlayer, private playerIndex: number, public allTurns: StraightPoolTurn[]) {}
+    constructor(
+      public player: StraightPoolPlayer,
+      public playerIndex: number,
+      public allTurns: StraightPoolTurn[]) {}
 
     get playerName(): string { return this.player.name; }
 
@@ -33,6 +41,10 @@ export class StraightPoolPlayerStats {
 
     get score(): number {
       return this.playerTurns.reduce((prior, t) => prior + t.totalPoints, 0);
+    }
+
+    get scoreWithHandicap(): number {
+      return this.score + this.player.handicapPoints;
     }
 
     get highRun(): number {

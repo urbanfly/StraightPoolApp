@@ -41,7 +41,7 @@ export class StraightPoolGame {
     }
 
     get winner(): StraightPoolPlayer {
-      return this.players.find((p, i) => this.getPlayerStats(i).score >= this.pointLimit);
+      return this.players.find((p, i) => this.getPlayerStats(i).scoreWithHandicap >= this.pointLimit);
     }
 
     get hasWinner(): boolean {

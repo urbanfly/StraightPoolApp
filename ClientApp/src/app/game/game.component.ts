@@ -1,4 +1,4 @@
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
@@ -19,6 +19,8 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   ballsRemaining: number;
   noSleep = new NoSleep();
   ballsToWin: number;
+  includeHandicap: boolean;
+
   @ViewChild('gameTabs') gameTabs: MatTabGroup;
   private newRackSnackBarRef: MatSnackBarRef<SimpleSnackBar>;
   chartOptions = {
@@ -40,12 +42,12 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private games: StraightPoolGamesService,
     private snackBar: MatSnackBar,
-    private route: ActivatedRouteSnapshot,
+    private route: ActivatedRoute,
     private location: Location) {
   }
 
   ngOnInit() {
-    const id = this.route.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
     this.games.loadGame(id).subscribe(g => {
       console.log('loaded game', g);
       this.game = g;
@@ -56,7 +58,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.gameTabs.selectedIndex = +this.route.queryParamMap.get('index') || 0;
+    this.gameTabs.selectedIndex = +this.route.snapshot.queryParamMap.get('index') || 0;
   }
 
   ngOnDestroy() {
@@ -65,6 +67,10 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   gameTabChanged(index: number) {
     this.location.replaceState(location.pathname, `index=${index}`);
+  }
+
+  toggleHandicap() {
+    this.includeHandicap = !this.includeHandicap;
   }
 
   miss() { this.endTurn(EndingType.Miss); }
@@ -106,7 +112,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private calcBallsToWin(): number {
     const stats = this.game.getPlayerStats(this.game.currentPlayerIndex);
-    return this.game.pointLimit - stats.score;
+    return this.game.pointLimit - stats.scoreWithHandicap;
   }
 
   private saveAndUpdate() {
