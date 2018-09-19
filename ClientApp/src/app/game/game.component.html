@@ -47,8 +47,10 @@
       <div style="width:100%; padding-bottom: 60px;">
         <h1>{{ game.winner.name || 'Player ' + (game.currentPlayerIndex + 1) }} is the winner!</h1>
         Stats and details are available above
-        <chart type="line" [data]="gameChartData" [options]="chartOptions" style="width:100%;"></chart>
-        <chart type="line" [data]="gameNormDistChartData" [options]="normDistOptions" style="width:100%;"></chart>
+        <hr/>
+        <chart type="line" [data]="gameChartData" [options]="chartOptions" style="width:100%; height:300px;"></chart>
+        <hr/>
+        <chart type="line" [data]="gameNormDistChartData" [options]="normDistOptions" style="width:100%; height:300px;"></chart>
       </div>
       <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
         <button mat-mini-fab

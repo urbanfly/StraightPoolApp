@@ -24,6 +24,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('gameTabs') gameTabs: MatTabGroup;
   private newRackSnackBarRef: MatSnackBarRef<SimpleSnackBar>;
   chartOptions = {
+    maintainAspectRatio: false,
     scales: {
       yAxes: [{
         id: 'A',
@@ -57,10 +58,14 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   normDistOptions = {
+    maintainAspectRatio: false,
     scales: {
       yAxes: [{
         gridLines: {
           display: false,
+        },
+        ticks: {
+          display: false
         },
         scaleLabel: {
           display: true,
