@@ -185,12 +185,14 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get gameChartData(): any {
     const runningTotals = this.game.players.map(p => ({
-      playerName: p.name,
+      player: p,
       label: `${p.name} Score`,
-      data: this.game.getPlayerStatsByPlayer(p).playerTurns.map(t => t.totalPoints).reduce(function(r, a) {
-        r.push((r.length && r[r.length - 1] || 0) + a);
-        return r;
-      }, []),
+      data: this.game.getPlayerStatsByPlayer(p).playerTurns
+            .map(t => t.totalPoints)
+            .reduce(function(r, a) {
+              r.push(r[r.length - 1] + a);
+              return r;
+            }, [(this.includeHandicap ? p.handicapPoints : 0)]),
       fill: false,
       borderColor: this.game.players[0] === p ? 'red' : 'blue',
       cubicInterpolationMode: 'monotone',
@@ -199,9 +201,9 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     const runningAvg = runningTotals.map(rt => ({
-      playerName: rt.playerName,
-      label: `${rt.playerName} Running Avg`,
-      data: rt.data.map((t, i2) => t / (i2 + 1)),
+      player: rt.player,
+      label: `${rt.player.name} Running Avg`,
+      data: rt.data.map((t, i) => (t - (this.includeHandicap ? rt.player.handicapPoints : 0)) / (i + 1)),
       fill: false,
       borderColor: rt.borderColor,
       borderDash: [5, 5],
