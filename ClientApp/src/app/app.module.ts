@@ -16,6 +16,7 @@ import { LocalStraightPoolGamesService } from './local-straight-pool-games.servi
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material/material.module';
 import { ChartModule } from 'angular2-chartjs';
+import { HomeCardComponent } from './home-card/home-card.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ChartModule } from 'angular2-chartjs';
     GameComponent,
     PlayersComponent,
     HomeComponent,
-    CreateComponent
+    CreateComponent,
+    HomeCardComponent
   ],
   imports: [
     BrowserModule,

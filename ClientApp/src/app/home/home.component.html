@@ -7,21 +7,7 @@
 </div>
 
 <ng-template #list>
-  <mat-card *ngFor="let g of games | async">
-    <mat-card-header>
-      <mat-card-title>
-        {{ g.players[0].name}} vs. {{ g.players[1].name }}
-      </mat-card-title>
-      <mat-card-subtitle>{{ getGameMoment(g).fromNow() }}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <chart type="line" [data]="getGameChartData(g)" [options]="chartOptions"></chart>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button color="primary" [routerLink]="'game/' + g.id">RESUME</button>
-      <button mat-button color="warn" (click)="giveHint()" (press)="deleteGame(g.id)">DELETE</button>
-    </mat-card-actions>
-  </mat-card>
+  <app-home-card *ngFor="let g of games | async" [game]="g" (deleting)="deleteGame($event.id)"></app-home-card>
 </ng-template>
 
 <ng-template #deleteConfirmation>
