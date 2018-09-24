@@ -18,6 +18,7 @@ import { MaterialModule } from './material/material.module';
 import { ChartModule } from 'angular2-chartjs';
 import { HomeCardComponent } from './home-card/home-card.component';
 import { ChartScoreComponent } from './chart-score/chart-score.component';
+import { ChartDistComponent } from './chart-dist/chart-dist.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ChartScoreComponent } from './chart-score/chart-score.component';
     HomeComponent,
     CreateComponent,
     HomeCardComponent,
-    ChartScoreComponent
+    ChartScoreComponent,
+    ChartDistComponent
   ],
   imports: [
     BrowserModule,
