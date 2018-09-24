@@ -6,7 +6,7 @@
     <mat-card-subtitle>{{ getGameMoment().fromNow() }}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <app-chart-score [game]="game"></app-chart-score>
+    <app-chart-score [game]="game" [includeHandicap]="true"></app-chart-score>
   </mat-card-content>
   <mat-card-actions>
     <button mat-button color="primary" [routerLink]="'game/' + game.id">RESUME</button>
