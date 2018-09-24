@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material/material.module';
 import { ChartModule } from 'angular2-chartjs';
 import { HomeCardComponent } from './home-card/home-card.component';
+import { ChartScoreComponent } from './chart-score/chart-score.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { HomeCardComponent } from './home-card/home-card.component';
     PlayersComponent,
     HomeComponent,
     CreateComponent,
-    HomeCardComponent
+    HomeCardComponent,
+    ChartScoreComponent
   ],
   imports: [
     BrowserModule,

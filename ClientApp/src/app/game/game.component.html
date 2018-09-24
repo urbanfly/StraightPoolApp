@@ -48,7 +48,7 @@
         <h1>{{ game.winner.name || 'Player ' + (game.currentPlayerIndex + 1) }} is the winner!</h1>
         Stats and details are available above
         <hr/>
-        <chart type="line" [data]="gameChartData" [options]="chartOptions" style="width:100%; height:300px;"></chart>
+        <app-chart-score [game]="game"></app-chart-score>
         <hr/>
         <chart type="line" [data]="gameNormDistChartData" [options]="normDistOptions" style="width:100%; height:300px;"></chart>
       </div>
