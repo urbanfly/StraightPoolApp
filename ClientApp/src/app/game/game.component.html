@@ -44,68 +44,16 @@
 <mat-tab-group mat-stretch-tabs #gameTabs id="game-tabs" (selectedIndexChange)="gameTabChanged($event)">
   <mat-tab label="Game">
     <app-game-win-screen style="padding-bottom: 60px;" [game]="game" [includeHandicap]="includeHandicap" *ngIf="game?.hasWinner; else scoring"></app-game-win-screen>
-    <!-- <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
+    <div *ngIf="game?.hasWinner" style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
       <button mat-mini-fab
         type="button" color="primary"
         *ngIf="game?.canUndo"
         (click)="undo()">
         <mat-icon>undo</mat-icon>
       </button>
-    </div> -->
+    </div>
     <ng-template #scoring>
-      <mat-grid-list cols="5" rowHeight="1:1">
-        <mat-grid-tile>
-          <button type="button" *ngIf="(game?.ballsRemaining - ballsToWin) === 1; else renew" mat-mini-fab (click)="win(1)" color="accent">
-            <mat-icon>done_outline</mat-icon>
-          </button>
-          <ng-template #renew>
-            <button type="button" mat-mini-fab (click)="newRack(1)" [disabled]="(game?.ballsRemaining - ballsToWin) > 1">
-              <mat-icon>autorenew</mat-icon>
-            </button>
-          </ng-template>
-        </mat-grid-tile>
-        <mat-grid-tile *ngFor="let i of [2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
-          <button type="button" *ngIf="(game?.ballsRemaining - ballsToWin) === i; else notWinning" mat-mini-fab name="balls{{i}}" (click)="win(i)" color="accent">
-            <mat-icon>done_outline</mat-icon>
-          </button>
-          <ng-template #notWinning>
-            <button type="button" mat-mini-fab name="balls{{i}}" (click)="setBallsRemaining(i)" [color]="ballsRemaining == i ? 'primary' : 'accent'"
-              [disabled]="game?.ballsRemaining < i || (i < game?.ballsRemaining - ballsToWin)">{{i}}</button>
-          </ng-template>
-        </mat-grid-tile>
-      </mat-grid-list>
-      <div class="actionButtons">
-        <table style="margin-left:auto;margin-right:auto;">
-          <tr>
-            <td>
-              <button mat-raised-button type="button" color="warn" (click)="foul()">Foul</button>
-            </td>
-            <td>
-              <button mat-raised-button type="button" color="primary" (click)="miss()">Miss</button>
-            </td>
-            <td>
-              <button mat-raised-button type="button" color="accent" (click)="safety()">Safety</button>
-            </td>
-          </tr>
-          <tr style="height:52px;">
-            <td>
-              <button mat-stroked-button type="button" color="warn" *ngIf="game?.isOpeningBreak && ballsRemaining === 15" id="breakingFoul"
-                (click)="breakingFoul()">Breaking</button>
-            </td>
-            <td>
-              <button mat-icon-button type="button" color="primary" *ngIf="game?.canUndo" (click)="undo()">
-                <mat-icon>undo</mat-icon>
-              </button>
-            </td>
-            <td>
-              <button mat-stroked-button type="button" color="accent" *ngIf="game?.canSwitchPlayers && ballsRemaining === 15" id="switchPlayers"
-                (click)="game.switchPlayers()">Switch</button>
-              <button mat-stroked-button type="button" color="accent" *ngIf="game?.canForceRerack && ballsRemaining === 15" id="forceRerack"
-                (click)="endTurn('ForceRerack')">Re-rack</button>
-            </td>
-          </tr>
-        </table>
-      </div>
+      <app-game-scoring [game]="game" [includeHandicap]="includeHandicap" (gameChanged)="gameChanged($event)"></app-game-scoring>
     </ng-template>
   </mat-tab>
   <mat-tab label="Stats">

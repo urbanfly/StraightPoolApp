@@ -22,17 +22,6 @@
   color: white;
 }
 
-.actionButtons {
-  text-align: center;
-  position: absolute;
-  bottom: 8px;
-  width: 100%;
-}
-
-.actionButtons button {
-  margin: 5px;
-}
-
 .turnList {
   display: flex;
   flex-direction: column;

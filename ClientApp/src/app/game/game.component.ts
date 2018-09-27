@@ -3,10 +3,11 @@ import { Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { StraightPoolGamesService } from '../straight-pool-games.service';
 import { StraightPoolGame } from '../straight-pool-game';
-import { EndingType } from '../straight-pool-ending-type.enum';
 import { StraightPoolTurn } from '../straight-pool-turn';
-import { MatSnackBar, MatTabGroup, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { MatTabGroup } from '@angular/material';
 import * as NoSleep from 'nosleep.js';
+import { GameScoringComponent } from '../game-scoring/game-scoring.component';
+import { EndingType } from '../straight-pool-ending-type.enum';
 
 @Component({
   selector: 'app-game',
@@ -22,10 +23,10 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   includeHandicap = true;
 
   @ViewChild('gameTabs') gameTabs: MatTabGroup;
-  private newRackSnackBarRef: MatSnackBarRef<SimpleSnackBar>;
+
+  @ViewChild(GameScoringComponent) scoring: GameScoringComponent;
 
   constructor(private games: StraightPoolGamesService,
-    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private location: Location) {
   }
@@ -35,14 +36,12 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
     this.games.loadGame(id).subscribe(g => {
       console.log('loaded game', g);
       this.game = g;
-      this.update();
     });
-
-    this.noSleep.enable();
   }
 
   ngAfterViewInit() {
     this.gameTabs.selectedIndex = +this.route.snapshot.queryParamMap.get('index') || 0;
+    this.noSleep.enable();
   }
 
   ngOnDestroy() {
@@ -57,67 +56,18 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
     this.includeHandicap = !this.includeHandicap;
   }
 
-  miss() { this.endTurn(EndingType.Miss); }
-  foul() { this.endTurn(EndingType.Foul); }
-  breakingFoul() { this.endTurn(EndingType.BreakingFoul); }
-  safety() { this.endTurn(EndingType.Safety); }
-
-  private endTurn(ending: EndingType, ballsRemaining: number = this.ballsRemaining): StraightPoolTurn {
-    // In case the sleep was cancelled, re-enable sleeping
-    // - screen manually turned off
-    // - switching apps
-    this.noSleep.enable();
-
-    const turn = this.game.endTurn(ending, ballsRemaining);
-
-    this.saveAndUpdate();
-
-    return turn;
-  }
-
-  newRack(ballsRemaining: number) {
-    const turn = this.endTurn(EndingType.NewRack, ballsRemaining);
-    this.newRackSnackBarRef = this.snackBar.open('Nice job!', 'Include 15th ball', { duration: 5000 });
-    this.newRackSnackBarRef.onAction().subscribe(() => {
-      turn.include15thBall();
-      this.saveAndUpdate();
-    });
+  gameChanged(turn: StraightPoolTurn) {
+    this.games.saveGame(this.game);
+    if (turn.ending === EndingType.Win) {
+      this.noSleep.disable();
+    } else {
+      this.noSleep.enable();
+    }
   }
 
   undo() {
     const turn = this.game.undo();
-    this.saveAndUpdate();
-  }
-
-  setBallsRemaining(ballsRemaining: number) {
-    this.hideSnackBar();
-    this.ballsRemaining = ballsRemaining;
-  }
-
-  private calcBallsToWin(): number {
-    const stats = this.game.getPlayerStats(this.game.currentPlayerIndex);
-    return this.game.pointLimit - stats.scoreWithHandicap;
-  }
-
-  private saveAndUpdate() {
-    this.hideSnackBar();
-    this.update();
-    this.games.saveGame(this.game);
-  }
-
-  private update() {
-    this.ballsRemaining = this.game.ballsRemaining;
-    this.ballsToWin = this.calcBallsToWin();
-  }
-
-  private hideSnackBar() {
-    if (this.newRackSnackBarRef) {
-      this.newRackSnackBarRef.dismiss();
-      this.newRackSnackBarRef = null;
-    }
-  }
-
-  win(ballsRemaining: number) {
-    this.endTurn(EndingType.Win, ballsRemaining);
+    this.gameChanged(turn);
+    this.scoring.update();
   }
 }
