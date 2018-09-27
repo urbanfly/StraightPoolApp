@@ -19,6 +19,8 @@ import { ChartModule } from 'angular2-chartjs';
 import { HomeCardComponent } from './home-card/home-card.component';
 import { ChartScoreComponent } from './chart-score/chart-score.component';
 import { ChartDistComponent } from './chart-dist/chart-dist.component';
+import { GameScoringComponent } from './game-scoring/game-scoring.component';
+import { GameWinScreenComponent } from './game-win-screen/game-win-screen.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { ChartDistComponent } from './chart-dist/chart-dist.component';
     CreateComponent,
     HomeCardComponent,
     ChartScoreComponent,
-    ChartDistComponent
+    ChartDistComponent,
+    GameScoringComponent,
+    GameWinScreenComponent
   ],
   imports: [
     BrowserModule,

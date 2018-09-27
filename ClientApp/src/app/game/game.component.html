@@ -43,24 +43,15 @@
 
 <mat-tab-group mat-stretch-tabs #gameTabs id="game-tabs" (selectedIndexChange)="gameTabChanged($event)">
   <mat-tab label="Game">
-    <div *ngIf="game?.hasWinner; else scoring" class="winning">
-      <div style="width:100%; padding-bottom: 60px;">
-        <h1>{{ game.winner.name || 'Player ' + (game.currentPlayerIndex + 1) }} is the winner!</h1>
-        Stats and details are available above
-        <hr/>
-        <app-chart-score [game]="game" [includeHandicap]="includeHandicap"></app-chart-score>
-        <hr/>
-        <app-chart-dist [game]="game"></app-chart-dist>
-      </div>
-      <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
-        <button mat-mini-fab
-          type="button" color="primary"
-          *ngIf="game?.canUndo"
-          (click)="undo()">
-          <mat-icon>undo</mat-icon>
-        </button>
-      </div>
-    </div>
+    <app-game-win-screen style="padding-bottom: 60px;" [game]="game" [includeHandicap]="includeHandicap" *ngIf="game?.hasWinner; else scoring"></app-game-win-screen>
+    <!-- <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
+      <button mat-mini-fab
+        type="button" color="primary"
+        *ngIf="game?.canUndo"
+        (click)="undo()">
+        <mat-icon>undo</mat-icon>
+      </button>
+    </div> -->
     <ng-template #scoring>
       <mat-grid-list cols="5" rowHeight="1:1">
         <mat-grid-tile>

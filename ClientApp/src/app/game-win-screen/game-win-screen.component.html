@@ -1,0 +1,6 @@
+<h1>{{ game.winner.name || 'Player ' + (game.currentPlayerIndex + 1) }} is the winner!</h1>
+Stats and details are available above
+<hr/>
+<app-chart-score [game]="game" [includeHandicap]="includeHandicap"></app-chart-score>
+<hr/>
+<app-chart-dist [game]="game"></app-chart-dist>
