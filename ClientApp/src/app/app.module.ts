@@ -21,6 +21,7 @@ import { ChartScoreComponent } from './chart-score/chart-score.component';
 import { ChartDistComponent } from './chart-dist/chart-dist.component';
 import { GameScoringComponent } from './game-scoring/game-scoring.component';
 import { GameWinScreenComponent } from './game-win-screen/game-win-screen.component';
+import { GameDetailsComponent } from './game-details/game-details.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { GameWinScreenComponent } from './game-win-screen/game-win-screen.compon
     ChartScoreComponent,
     ChartDistComponent,
     GameScoringComponent,
-    GameWinScreenComponent
+    GameWinScreenComponent,
+    GameDetailsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, AfterContentInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { StraightPoolGame } from '../straight-pool-game';
 import { EndingType } from '../straight-pool-ending-type.enum';
 import { MatSnackBarRef, SimpleSnackBar, MatSnackBar } from '@angular/material';

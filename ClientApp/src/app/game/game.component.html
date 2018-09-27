@@ -60,12 +60,7 @@
     <app-players [game]="game"></app-players>
   </mat-tab>
   <mat-tab label="Details">
-    <div class="turnList">
-      <div *ngFor="let turn of game?.turns" class="turn" [ngClass]="['player'+turn.playerIndex, turn.ending]">
-        <span class="ending">{{ turn.ending }}</span>
-        <span class="points">{{ turn.totalPoints }}</span>
-      </div>
-    </div>
+    <app-game-details [game]="game"></app-game-details>
     <div style="position:fixed; width: 100%; bottom: 16px; margin-left:auto; margin-right: auto; text-align: center;">
       <button mat-icon-button
         type="button" color="primary"

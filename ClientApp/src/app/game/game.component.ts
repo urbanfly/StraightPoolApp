@@ -50,6 +50,9 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   gameTabChanged(index: number) {
     this.location.replaceState(location.pathname, `index=${index}`);
+    if (index === 0 && this.scoring) { // scoring
+      this.scoring.update();
+    }
   }
 
   toggleHandicap() {
@@ -68,6 +71,5 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   undo() {
     const turn = this.game.undo();
     this.gameChanged(turn);
-    this.scoring.update();
   }
 }

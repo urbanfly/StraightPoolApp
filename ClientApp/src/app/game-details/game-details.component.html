@@ -1,0 +1,4 @@
+<div *ngFor="let turn of game?.turns" class="turn" [ngClass]="['player'+turn.playerIndex, turn.ending]">
+  <span class="ending">{{ turn.ending }}</span>
+  <span class="points">{{ turn.totalPoints }}</span>
+</div>
